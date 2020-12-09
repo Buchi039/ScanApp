@@ -1,4 +1,4 @@
-package com.example
+package de.toowoxx
 
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet

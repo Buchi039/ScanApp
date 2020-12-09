@@ -1,6 +1,6 @@
-package com.example
+package de.toowoxx
 
-import com.example.view.MainView
+import de.toowoxx.view.MainView
 import tornadofx.App
 
 class MyApp: App(MainView::class, Styles::class)

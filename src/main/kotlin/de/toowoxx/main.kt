@@ -1,4 +1,4 @@
-package com.example
+package de.toowoxx
 
 import tornadofx.launch
 

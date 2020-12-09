@@ -1,6 +1,6 @@
-package com.example.view
+package de.toowoxx.view
 
-import com.example.Styles
+import de.toowoxx.Styles
 import tornadofx.*
 
 class MainView : View("Hello TornadoFX 1234") {

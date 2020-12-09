@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.9'
 }
-group = 'com.test'
+group = 'de.toowoxx'
 version = '1.0-SNAPSHOT'
 
 repositories {
