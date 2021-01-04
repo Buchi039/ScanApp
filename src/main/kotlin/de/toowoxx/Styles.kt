@@ -9,6 +9,8 @@ import tornadofx.px
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
+        val adminView by cssclass()
+
     }
 
     init {
@@ -16,6 +18,11 @@ class Styles : Stylesheet() {
             padding = box(10.px)
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
+        }
+        adminView {
+            padding = box(15.px)
+            vgap = 7.px
+            hgap = 10.px
         }
     }
 }
