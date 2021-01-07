@@ -1,19 +1,10 @@
-buildscript {
-    ext.kotlin_version = '1.4.21'
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.4.21"
     id 'org.openjfx.javafxplugin' version '0.0.9'
-
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
 }
+
 group = 'de.toowoxx'
 version = '1.0-SNAPSHOT'
 
