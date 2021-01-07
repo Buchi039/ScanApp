@@ -2,8 +2,9 @@ package de.toowoxx.controller
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import de.toowoxx.model.ButtonData
+import de.toowoxx.model.ButtonDataJson
 import de.toowoxx.model.UserModel
+import de.toowoxx.model.UserModelJson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
@@ -12,29 +13,31 @@ import java.io.File
 
 class UserController : Controller() {
 
-    fun saveUserData(filePath: String, users: List<UserModel>) {
 
-        var file = File(filePath)
-        var usersJson = Gson().toJson(users)
+    fun saveUsersToJson(filePath: String, users: MutableList<UserModelJson>) {
+        val file = File(filePath)
+        val usersJson = Gson().toJson(users)
         file.writeText(usersJson)
     }
 
-    fun loadAllUserData(filePath: String): List<UserModel> {
+    fun loadUsersFromJson(filePath: String): List<UserModel> {
 
-        var gson = Gson()
-        var file = File(filePath)
-        if (file.exists()) {
-            var usersJson = file.readText()
+        val gson = Gson()
+        val file = File(filePath)
+        return if (file.exists()) {
+            val usersJson = file.readText()
 
-            val sType = object : TypeToken<List<UserModel>>() {}.type
-            return gson.fromJson<List<UserModel>>(usersJson, sType)
+            val sType = object : TypeToken<List<UserModelJson>>() {}.type
+            val list = gson.fromJson<List<UserModelJson>>(usersJson, sType)
+            jsonDataToData(list)
         } else
-            return listOf()
+            listOf()
 
     }
 
-    fun loadUserData(filepath: String, username: String?): UserModel? {
-        val allUserData = loadAllUserData(filepath)
+
+    fun getUserByUsername(filepath: String, username: String?): UserModel? {
+        val allUserData = loadUsersFromJson(filepath)
         for (user in allUserData) {
             if (user.username == username)
                 return user
@@ -42,26 +45,28 @@ class UserController : Controller() {
         return null
     }
 
-    fun generateDummyUsers(): List<UserModel> {
 
-        var button1: ButtonData = ButtonData("/usr/bin/open -a Keka", 1, "Keka")
-        var button2: ButtonData = ButtonData("/usr/bin/open -a Terminal", 2, "Terminal")
-        var button3: ButtonData = ButtonData("/usr/bin/open -a CotEditor", 3, "CotEditor")
+    fun generateDummyUsers(): MutableList<UserModelJson> {
 
-        var buttonList: ObservableList<ButtonData> = observableListOf(mutableListOf(button1, button2, button3))
-
-
-        var user = UserModel("Michael", buttonList, "1")
-        var user2 = UserModel("Stefan", buttonList, "2")
+        val button1 = ButtonDataJson(1, "/usr/bin/open -a Keka", 1, "Keka")
+        val button2 = ButtonDataJson(2, "/usr/bin/open -a Terminal", 2, "Terminal")
+        val button3 = ButtonDataJson(3, "/usr/bin/open -a CotEditor", 3, "CotEditor")
 
 
-        return listOf(user, user2)
+        val buttonList = mutableListOf(button1, button2, button3)
+
+
+        val user = UserModelJson(1, "Michael", buttonList)
+        val user2 = UserModelJson(2, "Stefan", buttonList)
+
+        return mutableListOf(user, user2)
     }
 
-    fun getUsernames(): ObservableList<String> {
-        val users = loadAllUserData("users.json")
 
-        var usernames = FXCollections.observableArrayList<String>()
+    fun getUsernames(): ObservableList<String> {
+        val users = loadUsersFromJson("users.json")
+
+        val usernames = FXCollections.observableArrayList<String>()
 
         for (it in users) {
             usernames.add(it.username)
@@ -69,5 +74,23 @@ class UserController : Controller() {
 
         return usernames
 
+    }
+
+    fun dataToJsonData(list: ObservableList<UserModel>): MutableList<UserModelJson> {
+
+        val userJson = mutableListOf<UserModelJson>()
+        for (it in list) {
+            userJson.add(it.toUserModelJson())
+        }
+        return userJson
+
+    }
+
+    private fun jsonDataToData(list: List<UserModelJson>): ObservableList<UserModel> {
+        val userModelList = observableListOf<UserModel>()
+        for (it in list) {
+            userModelList.add(it.toUserModel())
+        }
+        return userModelList
     }
 }

@@ -17,7 +17,7 @@ class Editor : View("Person Editor") {
     val userController: UserController by inject()
 
     // Some fake data for our table
-    val persons = userController.loadAllUserData("users.json").observable()
+    val persons = userController.loadUsersFromJson("users.json").asObservable()
 
     var prevSelection: UserModel? = null
 
@@ -28,7 +28,7 @@ class Editor : View("Person Editor") {
                 tableview(persons) {
                     personTable = this
                     //column("Name", UserModel::nameProperty)
-                    
+
 
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {

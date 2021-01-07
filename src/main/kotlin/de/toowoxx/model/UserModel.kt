@@ -1,23 +1,78 @@
 package de.toowoxx.model
 
-import javafx.beans.property.SimpleListProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import tornadofx.getValue
-import tornadofx.setValue
+import tornadofx.*
+import javax.json.JsonObject
+
 
 class UserModel(
-    username: String, userButtons: ObservableList<ButtonData>, scanProfile: String
-) {
+    id: Int, username: String, userButtons: ObservableList<ButtonData>
+) : JsonModel {
 
-    val usernameProperty = SimpleStringProperty(this, "username", username)
+    private val idProperty = SimpleIntegerProperty()
+    var id by idProperty
+
+    val usernameProperty = SimpleStringProperty()
     var username by usernameProperty
 
-    val userButtonsProperty = SimpleListProperty(this, "userButtons", userButtons)
-    var userButtons by userButtonsProperty
 
-    val scanProfileProperty = SimpleStringProperty(this, "scanProfile", scanProfile)
-    var scanProfile by scanProfileProperty
+    var userButtons = FXCollections.observableArrayList<ButtonData>()
 
+
+    override fun updateModel(json: JsonObject) {
+        with(json) {
+            id = this.int("id")!!
+            username = string("username")
+            userButtons.setAll(getJsonArray("userButtons").toModel())
+        }
+    }
+
+    override fun toJSON(json: JsonBuilder) {
+        with(json) {
+            add("id", id)
+            add("username", username)
+            add("userButtons", userButtons.toJSON())
+        }
+    }
+
+    fun toUserModelJson(): UserModelJson {
+
+        var buttons = mutableListOf<ButtonDataJson>()
+        for (it in userButtons) {
+            buttons.add(it.toButtonDataJson())
+        }
+        var user = UserModelJson(id, username, buttons)
+        return user
+    }
 }
+
+data class UserModelJson(
+
+    var id: Int,
+    var username: String,
+    var userButtons: MutableList<ButtonDataJson>
+
+) {
+
+    fun toUserModel(): UserModel {
+        var buttons = observableListOf<ButtonData>()
+
+        for (it in userButtons) {
+            buttons.add(it.toButtonData())
+        }
+        var userModel = UserModel(id, username, buttons)
+        userModel.id = id
+        userModel.username = username
+        userModel.userButtons = buttons
+        return userModel
+    }
+}
+
+
+
+
+
 
