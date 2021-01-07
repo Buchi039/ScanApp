@@ -14,7 +14,7 @@ class LoginController : Controller() {
 
     fun tryLogin(username: String, password: String) {
         runAsync {
-            username == "admin" && password == "secret"
+            (username == "admin" && password == "secret") || (username == "a" && password == "a")
         } ui { successfulLogin ->
 
             if (successfulLogin) {

@@ -8,17 +8,14 @@ import javafx.scene.layout.BorderPane
 import tornadofx.*
 
 
-class Editor : View("Person Editor") {
+class Editor : View("User Editor") {
     override val root = BorderPane()
     var nameField: TextField by singleAssign()
     var titleField: TextField by singleAssign()
     var personTable: TableView<UserModel> by singleAssign()
 
     val userController: UserController by inject()
-
-    // Some fake data for our table
-    val userList = userController.loadUsersFromJson("users.json").asObservable()
-
+    val userList = userController.loadUsersFromJson().asObservable()
     var prevSelection: UserModel? = null
 
     init {
@@ -27,7 +24,7 @@ class Editor : View("Person Editor") {
             center {
                 tableview(userList) {
                     personTable = this
-                    column("Name", UserModel::usernameProperty)
+                    column("User", UserModel::usernameProperty)
 
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {
@@ -39,7 +36,7 @@ class Editor : View("Person Editor") {
 
             right {
                 form {
-                    fieldset("Edit person") {
+                    fieldset("Edit User") {
                         field("Name") {
                             textfield() {
                                 nameField = this
@@ -71,17 +68,17 @@ class Editor : View("Person Editor") {
 
     private fun save() {
         // Extract the selected person from the tableView
-        val person = personTable.selectedItem!!
+        val editedUser = personTable.selectedItem!!
 
-        for (user in userList) {
-            if (user.id == person.id) {
-                userList.remove(user)
-                userList.add(person)
+        for (it in userList) {
+            if (it.id == editedUser.id) {
+                userList.remove(it)
+                userList.add(editedUser)
                 break
             }
         }
 
-        println("Saving ${person.usernameProperty} / ")
+        println("Saving ${editedUser.usernameProperty} / ")
         userController.saveUsersToJson("users.json", userController.dataToJsonData(userList))
     }
 }
