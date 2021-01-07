@@ -18,12 +18,15 @@ class LoginController : Controller() {
             if (successfulLogin) {
                 println("Success")
                 loginScreen.clear()
-                loginScreen.replaceWith(secureScreen, sizeToScene = true, centerOnScreen = true)
+                secureScreen.openModal()
+                
+
             } else {
                 println("Wrong!")
             }
         }
     }
+
 
     fun tryLogin2(username: String, password: String): Boolean {
         return (username == "admin" && password == "secret")
