@@ -13,6 +13,12 @@ repositories {
     mavenCentral()
 }
 
+shadowJar {
+    archiveBaseName.set('KodakScanApp')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}
+
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

@@ -13,6 +13,8 @@ import java.io.File
 
 class UserController : Controller() {
 
+    private val path = "users.json"
+
 
     fun saveUsersToJson(filePath: String, users: MutableList<UserModelJson>) {
         val file = File(filePath)
@@ -20,7 +22,7 @@ class UserController : Controller() {
         file.writeText(usersJson)
     }
 
-    fun loadUsersFromJson(filePath: String): List<UserModel> {
+    fun loadUsersFromJson(filePath: String = path): List<UserModel> {
 
         val gson = Gson()
         val file = File(filePath)

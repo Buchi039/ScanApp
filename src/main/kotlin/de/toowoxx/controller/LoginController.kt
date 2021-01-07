@@ -1,6 +1,7 @@
 package de.toowoxx.controller
 
 import de.toowoxx.view.AdminView
+import de.toowoxx.view.Editor
 import de.toowoxx.view.SecureScreen
 import tornadofx.Controller
 
@@ -8,6 +9,7 @@ class LoginController : Controller() {
 
     val loginScreen: AdminView by inject()
     val secureScreen: SecureScreen by inject()
+    val editor: Editor by inject()
 
 
     fun tryLogin(username: String, password: String) {
@@ -18,8 +20,9 @@ class LoginController : Controller() {
             if (successfulLogin) {
                 println("Success")
                 loginScreen.clear()
-                secureScreen.openModal()
-                
+                //secureScreen.openModal()
+                editor.openModal()
+
 
             } else {
                 println("Wrong!")
