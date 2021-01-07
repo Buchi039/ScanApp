@@ -17,7 +17,7 @@ class Editor : View("Person Editor") {
     val userController: UserController by inject()
 
     // Some fake data for our table
-    val persons = userController.loadUsersFromJson("users.json").asObservable()
+    val userList = userController.loadUsersFromJson("users.json").asObservable()
 
     var prevSelection: UserModel? = null
 
@@ -25,10 +25,9 @@ class Editor : View("Person Editor") {
         with(root) {
             // TableView showing a list of people
             center {
-                tableview(persons) {
+                tableview(userList) {
                     personTable = this
-                    //column("Name", UserModel::nameProperty)
-
+                    column("Name", UserModel::usernameProperty)
 
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {
@@ -74,7 +73,15 @@ class Editor : View("Person Editor") {
         // Extract the selected person from the tableView
         val person = personTable.selectedItem!!
 
-        // A real application would persist the person here
+        for (user in userList) {
+            if (user.id == person.id) {
+                userList.remove(user)
+                userList.add(person)
+                break
+            }
+        }
+
         println("Saving ${person.usernameProperty} / ")
+        userController.saveUsersToJson("users.json", userController.dataToJsonData(userList))
     }
 }
