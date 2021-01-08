@@ -1,6 +1,7 @@
 package de.toowoxx.view
 
 import de.toowoxx.controller.UserController
+import de.toowoxx.model.ButtonData
 import de.toowoxx.model.UserModel
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
@@ -9,66 +10,152 @@ import tornadofx.*
 
 
 class Editor : View("User Editor") {
+    
     override val root = BorderPane()
     var nameField: TextField by singleAssign()
-    var titleField: TextField by singleAssign()
-    var personTable: TableView<UserModel> by singleAssign()
+
+    var buttonTitleField: TextField by singleAssign()
+
+
+    var userTable: TableView<UserModel> by singleAssign()
+
 
     val userController: UserController by inject()
-    val userList = userController.loadUsersFromJson().asObservable()
-    var prevSelection: UserModel? = null
+    val userList = userController.userList
+    var prevSelectionUser: UserModel? = null
+    var prevSelectionButton: ButtonData? = null
+
+
+    var buttonList = observableListOf<ButtonData>()
+    var buttonTable: TableView<ButtonData> by singleAssign()
+
 
     init {
         with(root) {
             // TableView showing a list of people
-            center {
+            left {
                 tableview(userList) {
-                    personTable = this
+                    userTable = this
                     column("User", UserModel::usernameProperty)
 
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {
-                        editPerson(it)
-                        prevSelection = it
+                        editUser(it)
+                        prevSelectionUser = it
+                        if (it != null) {
+                            buttonList.setAll(it.userButtons)
+
+                        }
+                        if (it != null && it.userButtons.isNotEmpty()) {
+                            prevSelectionButton = it.userButtons[0]
+                            buttonList.setAll(it.userButtons)
+
+                        }
                     }
                 }
             }
 
-            right {
-                form {
-                    fieldset("Edit User") {
-                        field("Name") {
-                            textfield() {
-                                nameField = this
+            center {
+                center {
+                    form {
+                        fieldset("User bearbeiten") {
+                            field("Name") {
+                                textfield() {
+                                    nameField = this
+                                }
+
                             }
-                        }
+                            fieldset("Buttontitle") {
+                                textfield() {
+                                    buttonTitleField = this
+                                }
+                            }/*
                         field("Title") {
                             textfield() {
                                 titleField = this
                             }
-                        }
-                        button("Save").action {
-                            save()
+                        }*/
+
+                            button("Speichern").action {
+                                saveUser()
+                            }
+                            button("Löschen").action {
+                                deleteUser()
+                            }
                         }
                     }
+                }
+                right {
+                    var buttonTable = tableview(buttonList) {
+                        buttonTable = this
+                        column("Buttons", ButtonData::titleProperty)
+                        column("Buttons", ButtonData::commandProperty)
+                        column("Buttons", ButtonData::buttonNumber)
+
+
+                        // Edit the currently selected person
+                        selectionModel.selectedItemProperty().onChange {
+                            editButton(it)
+                            prevSelectionButton = it
+                        }
+                    }
+                }
+            }
+            right {
+
+            }
+            bottom {
+
+                button("New user").action {
+                    newUser()
                 }
             }
         }
     }
 
-    private fun editPerson(person: UserModel?) {
+    private fun deleteUser() {
+        val deletedUser = userTable.selectedItem!!
+
+        for (user in userList) {
+            if (user.id == deletedUser.id) {
+                userList.remove(deletedUser)
+                break
+            }
+        }
+        userController.saveUsersToJson("users.json", userController.dataToJsonData(userList))
+    }
+
+    private fun newUser() {
+        userList.last().id
+        var newUser = UserModel(userList.last().id + 1, "Neu", observableListOf())
+        newUser.username = "Neu"
+        userList.add(newUser)
+        userController.saveUsersToJson("users.json", userController.dataToJsonData(userList))
+    }
+
+    private fun editUser(person: UserModel?) {
         if (person != null) {
-            prevSelection?.apply {
+            prevSelectionUser?.apply {
                 usernameProperty.unbindBidirectional(nameField.textProperty())
             }
             nameField.bind(person.usernameProperty)
-            prevSelection = person
+            prevSelectionUser = person
         }
     }
 
-    private fun save() {
+    private fun editButton(button: ButtonData?) {
+        if (button != null) {
+            prevSelectionButton?.apply {
+                titleProperty.unbindBidirectional(buttonTitleField.textProperty())
+            }
+            buttonTitleField.bind(button.titleProperty)
+            prevSelectionButton = button
+        }
+    }
+
+    private fun saveUser() {
         // Extract the selected person from the tableView
-        val editedUser = personTable.selectedItem!!
+        val editedUser = userTable.selectedItem!!
 
         for (it in userList) {
             if (it.id == editedUser.id) {
@@ -80,5 +167,7 @@ class Editor : View("User Editor") {
 
         println("Saving ${editedUser.usernameProperty} / ")
         userController.saveUsersToJson("users.json", userController.dataToJsonData(userList))
+        AdminView().onRefresh()
     }
+
 }

@@ -25,7 +25,7 @@ class ScanbuttonView(username: String) : View() {
 
     private fun genScanButtonGridpane(username: String?): GridPane {
         var buttonGrid = gridpane()
-        val user = userController.getUserByUsername("users.json", username)
+        val user = userController.getUserByUsername(username)
 
         if (user != null) {
             for (it in user.userButtons) {

@@ -8,13 +8,14 @@ import de.toowoxx.model.UserModelJson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
+import tornadofx.asObservable
 import tornadofx.observableListOf
 import java.io.File
 
 class UserController : Controller() {
 
     private val path = "users.json"
-
+    var userList = observableListOf<UserModel>()
 
     fun saveUsersToJson(filePath: String, users: MutableList<UserModelJson>) {
         val file = File(filePath)
@@ -22,7 +23,7 @@ class UserController : Controller() {
         file.writeText(usersJson)
     }
 
-    fun loadUsersFromJson(filePath: String = path): List<UserModel> {
+    private fun loadUsersFromJson(filePath: String = path): List<UserModel> {
 
         val gson = Gson()
         val file = File(filePath)
@@ -38,9 +39,8 @@ class UserController : Controller() {
     }
 
 
-    fun getUserByUsername(filepath: String, username: String?): UserModel? {
-        val allUserData = loadUsersFromJson(filepath)
-        for (user in allUserData) {
+    fun getUserByUsername(username: String?): UserModel? {
+        for (user in userList) {
             if (user.username == username)
                 return user
         }
@@ -55,10 +55,10 @@ class UserController : Controller() {
         val button3 = ButtonDataJson(3, "/usr/bin/open -a CotEditor", 3, "CotEditor")
 
 
-        val buttonList = mutableListOf(button1, button2, button3)
-
-
+        var buttonList = mutableListOf(button1, button2, button3)
         val user = UserModelJson(1, "Michael", buttonList)
+
+        buttonList = mutableListOf(button2, button3)
         val user2 = UserModelJson(2, "Stefan", buttonList)
 
         return mutableListOf(user, user2)
@@ -66,11 +66,8 @@ class UserController : Controller() {
 
 
     fun getUsernames(): ObservableList<String> {
-        val users = loadUsersFromJson("users.json")
-
         val usernames = FXCollections.observableArrayList<String>()
-
-        for (it in users) {
+        for (it in userList) {
             usernames.add(it.username)
         }
 
@@ -94,5 +91,9 @@ class UserController : Controller() {
             userModelList.add(it.toUserModel())
         }
         return userModelList
+    }
+
+    fun init() {
+        userList = loadUsersFromJson(path).asObservable()
     }
 }

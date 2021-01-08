@@ -12,9 +12,12 @@ class MainView : View() {
 
     val controller: MainController by inject()
     val userController: UserController by inject()
+    val userList = userController.userList
     override var root: Parent = vbox() {}
 
+
     init {
+        userController.init()
         root.add(button("ADMIN") {
             action {
                 println("admin pressed")
@@ -26,7 +29,7 @@ class MainView : View() {
             marginTopBottom(5.0)
             marginLeftRight(5.0)
         })
-        root.add(generateUserButtonsGridpane(userController.getUsernames()))
+        root.add(generateUserButtonsGridpane(userController.getUsernames().asObservable()))
     }
 
 
