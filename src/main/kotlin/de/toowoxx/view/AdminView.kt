@@ -8,6 +8,7 @@ import tornadofx.*
 class AdminView : View("Adminpanel") {
 
     val loginController: LoginController by inject()
+    val mainView: MainView by inject()
 
 
     private val model = object : ViewModel() {
@@ -46,7 +47,7 @@ class AdminView : View("Adminpanel") {
     }
 
     fun clear() {
-        model.username.value = ""
-        model.password.value = ""
+        model.username.value = " "
+        model.password.value = " "
     }
 }

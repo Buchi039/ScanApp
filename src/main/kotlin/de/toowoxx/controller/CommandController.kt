@@ -5,6 +5,6 @@ import tornadofx.Controller
 class CommandController : Controller() {
 
     fun runCmd(cmd: String) {
-        Runtime.getRuntime().exec(cmd)
+        Runtime.getRuntime().exec("/usr/bin/open -a " + cmd)
     }
 }

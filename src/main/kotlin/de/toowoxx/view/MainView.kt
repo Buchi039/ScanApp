@@ -12,6 +12,7 @@ class MainView : View() {
 
     val controller: MainController by inject()
     val userController: UserController by inject()
+    val adminView: AdminView by inject()
     val userList = userController.userList
     override var root: Parent = vbox() {}
 
@@ -21,7 +22,7 @@ class MainView : View() {
         root.add(button("ADMIN") {
             action {
                 println("admin pressed")
-                controller.showAdminView()
+                adminView.openWindow()
             }
             minWidth = 100.0
 
@@ -31,8 +32,7 @@ class MainView : View() {
         })
         root.add(generateUserButtonsGridpane(userController.getUsernames().asObservable()))
     }
-
-
+    
     fun generateUserButtons(userList: List<String>): List<Button> {
         val buttonList = mutableListOf<Button>()
         for ((buttonCount, user) in userList.withIndex()) {

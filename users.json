@@ -1,1 +1,50 @@
-[{"id":1,"username":"Michael","userButtons":[{"id":1,"command":"/usr/bin/open -a Keka","buttonNumber":1,"title":"Keka"},{"id":2,"command":"/usr/bin/open -a Terminal","buttonNumber":2,"title":"Terminal"}]},{"id":2,"username":"Stefan123","userButtons":[{"id":1,"command":"/usr/bin/open -a Keka","buttonNumber":1,"title":"Keka"},{"id":2,"command":"/usr/bin/open -a Terminal","buttonNumber":2,"title":"Terminal"},{"id":3,"command":"/usr/bin/open -a CotEditor","buttonNumber":3,"title":"CotEditor"}]}]
+[
+  {
+    "id": 1,
+    "username": "Michael",
+    "userButtons": [
+      {
+        "id": 1,
+        "command": "Keka",
+        "buttonNumber": 4,
+        "title": "Keka"
+      }
+    ]
+  },
+  {
+    "id": 0,
+    "username": "Sepp",
+    "userButtons": [
+      {
+        "id": 1,
+        "command": "Keka",
+        "buttonNumber": 4,
+        "title": "Keka"
+      },
+      {
+        "id": 2,
+        "command": "CotEditor",
+        "buttonNumber": 2,
+        "title": "CotEditor"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "username": "Stefan",
+    "userButtons": [
+      {
+        "id": 2,
+        "command": "Keka",
+        "buttonNumber": 1,
+        "title": "Keka"
+      },
+      {
+        "id": 3,
+        "command": "CotEditor",
+        "buttonNumber": 2,
+        "title": "CotEditor"
+      }
+    ]
+  }
+]

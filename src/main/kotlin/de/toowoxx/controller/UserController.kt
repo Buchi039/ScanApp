@@ -50,9 +50,9 @@ class UserController : Controller() {
 
     fun generateDummyUsers(): MutableList<UserModelJson> {
 
-        val button1 = ButtonDataJson(1, "/usr/bin/open -a Keka", 1, "Keka")
-        val button2 = ButtonDataJson(2, "/usr/bin/open -a Terminal", 2, "Terminal")
-        val button3 = ButtonDataJson(3, "/usr/bin/open -a CotEditor", 3, "CotEditor")
+        val button1 = ButtonDataJson(1, "Keka", 1, "Keka")
+        val button2 = ButtonDataJson(2, "Terminal", 2, "Terminal")
+        val button3 = ButtonDataJson(3, "CotEditor", 3, "CotEditor")
 
 
         var buttonList = mutableListOf(button1, button2, button3)

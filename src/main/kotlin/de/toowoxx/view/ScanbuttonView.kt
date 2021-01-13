@@ -45,7 +45,7 @@ class ScanbuttonView(username: String) : View() {
                 cmdController.runCmd(buttonData.command)
             }
         }.gridpaneConstraints {
-            columnRowIndex(buttonData.buttonNumber, 0)
+            columnRowIndex(buttonData.buttonNumber.toInt(), 0)
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true
@@ -63,7 +63,7 @@ class ScanbuttonView(username: String) : View() {
                 cmdController.runCmd(buttonData.command)
             }
         }.gridpaneConstraints {
-            columnRowIndex(buttonData.buttonNumber, 0)
+            columnRowIndex(buttonData.buttonNumber.toInt(), 0)
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true

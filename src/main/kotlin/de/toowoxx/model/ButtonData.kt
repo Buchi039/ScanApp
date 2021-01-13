@@ -18,7 +18,7 @@ class ButtonData(
     val commandProperty = SimpleStringProperty()
     var command by commandProperty
 
-    val buttonNumberProperty = SimpleIntegerProperty()
+    val buttonNumberProperty = SimpleStringProperty()
     var buttonNumber by buttonNumberProperty
 
     val titleProperty = SimpleStringProperty()
@@ -29,7 +29,7 @@ class ButtonData(
         with(json) {
             id = int("id")!!
             command = string("command")
-            buttonNumber = int("buttonNumber")!!
+            buttonNumber = string("buttonNumber")!!
             title = string("title")
         }
     }
@@ -44,7 +44,7 @@ class ButtonData(
     }
 
     fun toButtonDataJson(): ButtonDataJson {
-        var buttonDataJson = ButtonDataJson(id, command, buttonNumber, title)
+        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title)
         return buttonDataJson
     }
 }
@@ -61,7 +61,7 @@ data class ButtonDataJson(
         var btn = ButtonData(id, command, buttonNumber, title)
         btn.id = id
         btn.command = command
-        btn.buttonNumber = buttonNumber
+        btn.buttonNumber = buttonNumber.toString()
         btn.title = title
         return btn
     }
