@@ -9,7 +9,7 @@ import javax.json.JsonObject
 
 
 class UserModel(
-    id: Int, username: String, userButtons: ObservableList<ButtonData>
+    id: Int, username: String, userScanButtons: ObservableList<ScanButtonModel>
 ) : JsonModel {
 
     private val idProperty = SimpleIntegerProperty()
@@ -19,7 +19,7 @@ class UserModel(
     var username by usernameProperty
 
 
-    var userButtons = FXCollections.observableArrayList<ButtonData>()
+    var userButtons = FXCollections.observableArrayList<ScanButtonModel>()
 
 
     override fun updateModel(json: JsonObject) {
@@ -58,7 +58,7 @@ data class UserModelJson(
 ) {
 
     fun toUserModel(): UserModel {
-        var buttons = observableListOf<ButtonData>()
+        var buttons = observableListOf<ScanButtonModel>()
 
         for (it in userButtons) {
             buttons.add(it.toButtonData())

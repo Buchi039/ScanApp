@@ -2,7 +2,7 @@ package de.toowoxx.view
 
 import de.toowoxx.controller.CommandController
 import de.toowoxx.controller.UserController
-import de.toowoxx.model.ButtonData
+import de.toowoxx.model.ScanButtonModel
 import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.layout.GridPane
@@ -35,7 +35,7 @@ class ScanbuttonView(username: String) : View() {
         return buttonGrid
     }
 
-    private fun genScanButton0(buttonData: ButtonData): Button {
+    private fun genScanButton0(buttonData: ScanButtonModel): Button {
 
         val button = button(buttonData.title) {
             minHeight = 50.0
@@ -53,17 +53,17 @@ class ScanbuttonView(username: String) : View() {
         return button
     }
 
-    private fun genScanButton(buttonData: ButtonData): Button {
+    private fun genScanButton(scanButtonModel: ScanButtonModel): Button {
 
-        val button = button(buttonData.title) {
+        val button = button(scanButtonModel.title) {
             minHeight = 50.0
             minWidth = 100.0
             action {
-                println("Run Command: " + buttonData.command)
-                cmdController.runCmd(buttonData.command)
+                println("Run Command: " + scanButtonModel.command)
+                cmdController.runCmd(scanButtonModel.command)
             }
         }.gridpaneConstraints {
-            columnRowIndex(buttonData.buttonNumber.toInt(), 0)
+            columnRowIndex(scanButtonModel.buttonNumber.toInt(), 0)
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true

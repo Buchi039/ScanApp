@@ -17,8 +17,8 @@ class UserController : Controller() {
     private val path = "users.json"
     var userList = observableListOf<UserModel>()
 
-    fun saveUsersToJson(filePath: String, users: MutableList<UserModelJson>) {
-        val file = File(filePath)
+    fun saveUsersToJson(users: MutableList<UserModelJson>) {
+        val file = File(path)
         val usersJson = Gson().toJson(users)
         file.writeText(usersJson)
     }

@@ -6,7 +6,7 @@ import tornadofx.*
 import javax.json.JsonObject
 
 
-class ButtonData(
+class ScanButtonModel(
     id: Int,
     command: String,
     buttonNumber: Int,
@@ -57,8 +57,8 @@ data class ButtonDataJson(
     val title: String
 ) {
 
-    fun toButtonData(): ButtonData {
-        var btn = ButtonData(id, command, buttonNumber, title)
+    fun toButtonData(): ScanButtonModel {
+        var btn = ScanButtonModel(id, command, buttonNumber, title)
         btn.id = id
         btn.command = command
         btn.buttonNumber = buttonNumber.toString()

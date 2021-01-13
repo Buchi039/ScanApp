@@ -1,10 +1,13 @@
 package de.toowoxx
 
+import de.toowoxx.controller.UserController
 import tornadofx.launch
+import java.io.File
 
 
 fun main() {
-    //UserController().saveUsersToJson("users.json", UserController().generateDummyUsers())
+    if (!File("users.json").exists())
+        UserController().saveUsersToJson(UserController().generateDummyUsers())
     launch<MyApp>()
 }
 

@@ -32,7 +32,7 @@ class MainView : View() {
         })
         root.add(generateUserButtonsGridpane(userController.getUsernames().asObservable()))
     }
-    
+
     fun generateUserButtons(userList: List<String>): List<Button> {
         val buttonList = mutableListOf<Button>()
         for ((buttonCount, user) in userList.withIndex()) {
@@ -59,8 +59,17 @@ class MainView : View() {
         val buttons = generateUserButtons(userList)
         val gridPane = GridPane()
 
+        val maxCols = 8
+        var rowIndex = 1
+        var colIndex = 1
         for (button in buttons) {
-            gridPane.add(button)
+            gridPane.add(button, colIndex, rowIndex)
+            colIndex++
+            if (colIndex > maxCols) {
+                colIndex = 1
+                rowIndex++
+            }
+
         }
         return gridPane
     }

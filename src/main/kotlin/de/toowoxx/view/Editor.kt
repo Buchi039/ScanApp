@@ -1,7 +1,7 @@
 package de.toowoxx.view
 
 import de.toowoxx.controller.UserController
-import de.toowoxx.model.ButtonData
+import de.toowoxx.model.ScanButtonModel
 import de.toowoxx.model.UserModel
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
@@ -9,7 +9,6 @@ import tornadofx.*
 
 
 class Editor : View("User Editor") {
-
 
     override val root = hbox()
     var nameField: TextField by singleAssign()
@@ -24,11 +23,11 @@ class Editor : View("User Editor") {
     val userController: UserController by inject()
 
     var prevSelectionUser: UserModel? = null
-    var prevSelectionScanButton: ButtonData? = null
+    var prevSelectionScanButton: ScanButtonModel? = null
 
 
-    var scanButtonList = observableListOf<ButtonData>()
-    var scanButtonTable: TableView<ButtonData> by singleAssign()
+    var scanButtonList = observableListOf<ScanButtonModel>()
+    var scanButtonTable: TableView<ScanButtonModel> by singleAssign()
 
     var scanButtonFieldset = fieldset()
 
@@ -36,23 +35,20 @@ class Editor : View("User Editor") {
     init {
         with(root) {
 
-            vbox {
+            vbox() {
+
                 tableview(userController.userList) {
                     userTable = this
                     column("User", UserModel::usernameProperty)
-
+                    title = "Test123"
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {
                         editUser(it)
                         prevSelectionUser = it
+                        if (it != null)
+                            scanButtonList.setAll(it.userButtons)
 
-                        if (it != null) {
-                            scanButtonList.setAll(it.userButtons)
-                        }
-                        if (it != null && it.userButtons.isNotEmpty()) {
-                            prevSelectionScanButton = it.userButtons[0]
-                            scanButtonList.setAll(it.userButtons)
-                        }
+                        scanButtonFieldset.hide()
                     }
 
                 }
@@ -63,17 +59,18 @@ class Editor : View("User Editor") {
                     button("Löschen").action {
                         deleteUser()
                     }
+                    paddingTop = 10
                 }
-
-            }.paddingAll = 15
+                paddingAll = 15
+            }
 
 
             vbox {
                 tableview(scanButtonList) {
                     scanButtonTable = this
-                    column("Titel", ButtonData::titleProperty)
-                    column("Command", ButtonData::commandProperty)
-                    column("Nummer", ButtonData::buttonNumber)
+                    column("Titel", ScanButtonModel::titleProperty)
+                    column("Command", ScanButtonModel::commandProperty)
+                    column("Nummer", ScanButtonModel::buttonNumber)
 
 
                     selectionModel.selectedItemProperty().onChange {
@@ -83,15 +80,17 @@ class Editor : View("User Editor") {
                     }
                 }
                 hbox {
-                    button("Neu").action {
+                    button("Neuer Scanbutton").action {
                         newScanButton()
+                        paddingRight = 5
                     }
                     button("Profil löschen").action {
                         deleteScanButton()
                     }
+                    paddingTop = 10
                 }
-
-            }.paddingAll = 15
+                paddingAll = 15
+            }
 
             form {
                 fieldset("User bearbeiten") {
@@ -124,7 +123,8 @@ class Editor : View("User Editor") {
                         saveUser()
                     }
                 }
-            }.paddingAll = 15
+                paddingAll = 15
+            }
         }
     }
 
@@ -138,7 +138,7 @@ class Editor : View("User Editor") {
                 break
             }
         }
-        userController.saveUsersToJson("users.json", userController.dataToJsonData(userController.userList))
+        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
     }
 
     private fun deleteScanButton() {
@@ -155,20 +155,21 @@ class Editor : View("User Editor") {
         selectedUser.userButtons = observableListOf()
         selectedUser.userButtons.addAll(scanButtonList)
 
-        userController.saveUsersToJson("users.json", userController.dataToJsonData(userController.userList))
+        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
         prevSelectionScanButton = null
     }
 
     private fun newUser() {
         var newUser = UserModel(userController.userList.last().id + 1, "Neu", observableListOf())
         newUser.username = "Neu"
+        newUser.id = userController.userList.last().id + 1
         userController.userList.add(newUser)
-        userController.saveUsersToJson("users.json", userController.dataToJsonData(userController.userList))
+        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
     }
 
     private fun newScanButton() {
         val user = userTable.selectedItem!!
-        var button = ButtonData(99, "cmd", 2, "title")
+        var button = ScanButtonModel(99, "cmd", 2, "title")
         if (scanButtonList.isEmpty())
             button.id = 1
         else
@@ -190,18 +191,18 @@ class Editor : View("User Editor") {
         }
     }
 
-    private fun editScanButton(button: ButtonData?) {
-        if (button != null) {
+    private fun editScanButton(scanButton: ScanButtonModel?) {
+        if (scanButton != null) {
             prevSelectionScanButton?.apply {
                 titleProperty.unbindBidirectional(scanButtonTitleField.textProperty())
                 commandProperty.unbindBidirectional(scanButtonCommandField.textProperty())
                 buttonNumberProperty.unbindBidirectional(scanButtonNumberField.textProperty())
 
             }
-            scanButtonTitleField.bind(button.titleProperty)
-            scanButtonCommandField.bind(button.commandProperty)
-            scanButtonNumberField.bind(button.buttonNumberProperty)
-            prevSelectionScanButton = button
+            scanButtonTitleField.bind(scanButton.titleProperty)
+            scanButtonCommandField.bind(scanButton.commandProperty)
+            scanButtonNumberField.bind(scanButton.buttonNumberProperty)
+            prevSelectionScanButton = scanButton
         }
     }
 
@@ -211,16 +212,12 @@ class Editor : View("User Editor") {
 
         for (it in userController.userList) {
             if (it.id == editedUser.id) {
-                editedUser.userButtons = observableListOf()
-                editedUser.userButtons.addAll(scanButtonList)
-                userController.userList.remove(it)
-                userController.userList.add(editedUser)
-
+                editedUser.userButtons.setAll(scanButtonList)
                 break
             }
         }
         println("Saving ${editedUser.usernameProperty} / ")
-        userController.saveUsersToJson("users.json", userController.dataToJsonData(userController.userList))
+        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
     }
 
     private fun clearScanButtonEdit() {
