@@ -14,11 +14,12 @@ class MainView : View() {
     val userController: UserController by inject()
     val adminView: AdminView by inject()
     var userbuttons = GridPane()
+    var menubar = menubar()
     override var root: Parent = vbox() {}
 
 
     init {
-        menubar {
+        menubar = menubar {
             menu("Einstellungen") {
                 item("Admin").action {
                     println("admin pressed")
