@@ -31,6 +31,8 @@ class Editor : View("User Editor") {
 
     var scanButtonFieldset = fieldset()
 
+    val mainView: MainView by inject()
+
 
     init {
         with(root) {
@@ -139,6 +141,7 @@ class Editor : View("User Editor") {
             }
         }
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
+        mainView.refreshUserbuttons()
     }
 
     private fun deleteScanButton() {
@@ -165,6 +168,7 @@ class Editor : View("User Editor") {
         newUser.id = userController.userList.last().id + 1
         userController.userList.add(newUser)
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
+        mainView.refreshUserbuttons()
     }
 
     private fun newScanButton() {
@@ -218,6 +222,7 @@ class Editor : View("User Editor") {
         }
         println("Saving ${editedUser.usernameProperty} / ")
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
+        mainView.refreshUserbuttons()
     }
 
     private fun clearScanButtonEdit() {
@@ -225,6 +230,5 @@ class Editor : View("User Editor") {
         scanButtonNumberField.clear()
         scanButtonCommandField.clear()
     }
-
 
 }

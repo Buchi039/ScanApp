@@ -19,8 +19,9 @@ class MainView : View() {
 
 
     init {
+
         menubar = menubar {
-            menu("Einstellungen") {
+            menu("Bearbeiten") {
                 item("Admin").action {
                     println("admin pressed")
                     adminView.openWindow()
@@ -36,21 +37,19 @@ class MainView : View() {
         }
 
         userController.init()
-
-        userbuttons = genUserButtonsGridpane(userController.getUsernames().asObservable())
+        userbuttons = genUserButtonsGridpane(userController.getUsernames())
         root.add(userbuttons)
     }
 
     fun refreshUserbuttons() {
         userbuttons.clear()
-        userbuttons.add(genUserButtonsGridpane(userController.getUsernames().asObservable()))
-
+        userbuttons.add(genUserButtonsGridpane(userController.getUsernames()))
 
         userbuttons.autosize()
         root.autosize()
 
-        //this.setWindowMaxSize(userbuttons.width, userbuttons.height + 200.0)
-        //this.setWindowMinSize(userbuttons.width, userbuttons.height + 200.0)
+        this.setWindowMaxSize(userbuttons.width, userbuttons.height + menubar.height + 25.0)
+        this.setWindowMinSize(userbuttons.width, userbuttons.height + menubar.height + 25.0)
     }
 
     fun generateUserButtons(userList: List<String>): List<Button> {
@@ -66,6 +65,7 @@ class MainView : View() {
                 columnRowIndex(buttonCount + 1, 0)
                 marginTopBottom(5.0)
                 marginLeftRight(5.0)
+
 
                 fillHeight = true
             }

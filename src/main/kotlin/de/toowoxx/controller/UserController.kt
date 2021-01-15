@@ -18,6 +18,7 @@ class UserController : Controller() {
     var userList = observableListOf<UserModel>()
 
     fun saveUsersToJson(users: MutableList<UserModelJson>) {
+
         val file = File(path)
         val usersJson = Gson().toJson(users)
         file.writeText(usersJson)
@@ -35,18 +36,16 @@ class UserController : Controller() {
             jsonDataToData(list)
         } else
             listOf()
-
     }
 
-
     fun getUserByUsername(username: String?): UserModel? {
+
         for (user in userList) {
             if (user.username == username)
                 return user
         }
         return null
     }
-
 
     fun generateDummyUsers(): MutableList<UserModelJson> {
 
@@ -64,15 +63,13 @@ class UserController : Controller() {
         return mutableListOf(user, user2)
     }
 
-
     fun getUsernames(): ObservableList<String> {
+
         val usernames = FXCollections.observableArrayList<String>()
         for (it in loadUsersFromJson()) {
             usernames.add(it.username)
         }
-
         return usernames
-
     }
 
     fun dataToJsonData(list: ObservableList<UserModel>): MutableList<UserModelJson> {
@@ -82,10 +79,10 @@ class UserController : Controller() {
             userJson.add(it.toUserModelJson())
         }
         return userJson
-
     }
 
     private fun jsonDataToData(list: List<UserModelJson>): ObservableList<UserModel> {
+
         val userModelList = observableListOf<UserModel>()
         for (it in list) {
             userModelList.add(it.toUserModel())
