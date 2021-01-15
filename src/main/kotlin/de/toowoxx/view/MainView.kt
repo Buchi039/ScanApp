@@ -13,24 +13,43 @@ class MainView : View() {
     val controller: MainController by inject()
     val userController: UserController by inject()
     val adminView: AdminView by inject()
-    val userList = userController.userList
+    var userbuttons = GridPane()
     override var root: Parent = vbox() {}
 
 
     init {
-        userController.init()
-        root.add(button("ADMIN") {
-            action {
-                println("admin pressed")
-                adminView.openWindow()
+        menubar {
+            menu("Einstellungen") {
+                item("Admin").action {
+                    println("admin pressed")
+                    adminView.openWindow()
+                }
+                item("Aktualisieren").action {
+                    println("refresh pressed")
+                    refreshUserbuttons()
+                }
+                item("Beenden").action {
+                    close()
+                }
             }
-            minWidth = 100.0
+        }
 
-        }.vboxConstraints {
-            marginTopBottom(5.0)
-            marginLeftRight(5.0)
-        })
-        root.add(generateUserButtonsGridpane(userController.getUsernames().asObservable()))
+        userController.init()
+
+        userbuttons = genUserButtonsGridpane(userController.getUsernames().asObservable())
+        root.add(userbuttons)
+    }
+
+    fun refreshUserbuttons() {
+        userbuttons.clear()
+        userbuttons.add(genUserButtonsGridpane(userController.getUsernames().asObservable()))
+
+
+        userbuttons.autosize()
+        root.autosize()
+
+        //this.setWindowMaxSize(userbuttons.width, userbuttons.height + 200.0)
+        //this.setWindowMinSize(userbuttons.width, userbuttons.height + 200.0)
     }
 
     fun generateUserButtons(userList: List<String>): List<Button> {
@@ -55,7 +74,7 @@ class MainView : View() {
         return buttonList
     }
 
-    fun generateUserButtonsGridpane(userList: List<String>): GridPane {
+    fun genUserButtonsGridpane(userList: List<String>): GridPane {
         val buttons = generateUserButtons(userList)
         val gridPane = GridPane()
 

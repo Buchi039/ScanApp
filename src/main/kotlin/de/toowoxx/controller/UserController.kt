@@ -67,7 +67,7 @@ class UserController : Controller() {
 
     fun getUsernames(): ObservableList<String> {
         val usernames = FXCollections.observableArrayList<String>()
-        for (it in userList) {
+        for (it in loadUsersFromJson()) {
             usernames.add(it.username)
         }
 
