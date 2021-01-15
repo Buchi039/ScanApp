@@ -1,14 +1,21 @@
 package de.toowoxx.view
 
+import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanButtonModel
 import de.toowoxx.model.UserModel
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import tornadofx.*
 
 
 class Editor : View("User Editor") {
+    val mainController: MainController by inject()
 
     override val root = hbox()
     var nameField: TextField by singleAssign()
@@ -17,6 +24,7 @@ class Editor : View("User Editor") {
     var scanButtonTitleField: TextField by singleAssign()
     var scanButtonCommandField: TextField by singleAssign()
     var scanButtonNumberField: TextField by singleAssign()
+    var scanButtonImgCheckbox: CheckBox by singleAssign()
 
 
     var userTable: TableView<UserModel> by singleAssign()
@@ -30,6 +38,12 @@ class Editor : View("User Editor") {
     var scanButtonTable: TableView<ScanButtonModel> by singleAssign()
 
     var scanButtonFieldset = fieldset()
+
+    var iconButton: Button by singleAssign()
+    var iconField: Field by singleAssign()
+
+    val iconCheckboxProperty = SimpleBooleanProperty()
+
 
     val mainView: MainView by inject()
 
@@ -119,7 +133,45 @@ class Editor : View("User Editor") {
                             scanButtonNumberField = this
                         }
                     }
+
+
+
+
+                    field("Mit Icon?") {
+                        checkbox("", iconCheckboxProperty) {
+                            action {
+                                if (isSelected)
+                                    iconField.show()
+                                else
+                                    iconField.hide()
+                            }
+
+                        }
+                    }
+
+                    fieldset {
+                        field("Auswahl") {
+                            var iconCombo = combobox<String> {
+                                items = mainController.getAvailableIconNames().asObservable()
+                            }
+                            iconCombo.setOnAction { event ->
+
+                                var iconPath = mainController.getIconPath(iconCombo.value.toString())
+                                var imageView = ImageView(Image("file:$iconPath"))
+                                imageView.fitHeight = 70.0
+                                imageView.fitWidth = 70.0
+                                iconButton.graphic = imageView
+                            }
+                        }
+
+                        iconField = field("Vorschau") {
+                            iconButton = button { }
+                        }
+                        hiddenWhen(!iconCheckboxProperty)
+                    }
                 }.hide()
+
+
                 hbox {
                     button("Speichern").action {
                         saveUser()

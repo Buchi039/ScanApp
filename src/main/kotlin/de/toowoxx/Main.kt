@@ -6,6 +6,7 @@ import java.io.File
 
 
 fun main() {
+    
     if (!File("users.json").exists())
         UserController().saveUsersToJson(UserController().generateDummyUsers())
     launch<MyApp>()

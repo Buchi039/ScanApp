@@ -35,7 +35,7 @@ class MainView : View() {
                 }
             }
         }
-
+        
         userController.init()
         userbuttons = genUserButtonsGridpane(userController.getUsernames())
         root.add(userbuttons)

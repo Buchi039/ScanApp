@@ -24,6 +24,9 @@ class ScanButtonModel(
     val titleProperty = SimpleStringProperty()
     var title by titleProperty
 
+    val imgPathProperty = SimpleStringProperty()
+    var imgPath by imgPathProperty
+
 
     override fun updateModel(json: JsonObject) {
         with(json) {
@@ -31,6 +34,7 @@ class ScanButtonModel(
             command = string("command")
             buttonNumber = string("buttonNumber")!!
             title = string("title")
+            imgPath = string("imgPath")
         }
     }
 
@@ -40,11 +44,12 @@ class ScanButtonModel(
             add("command", command)
             add("buttonNumber", buttonNumber)
             add("title", title)
+            add("imgPath", imgPath)
         }
     }
 
     fun toButtonDataJson(): ButtonDataJson {
-        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title)
+        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title, imgPath)
         return buttonDataJson
     }
 }
@@ -54,7 +59,8 @@ data class ButtonDataJson(
     val id: Int,
     val command: String,
     val buttonNumber: Int,
-    val title: String
+    val title: String,
+    val imgPath: String
 ) {
 
     fun toButtonData(): ScanButtonModel {
@@ -63,6 +69,7 @@ data class ButtonDataJson(
         btn.command = command
         btn.buttonNumber = buttonNumber.toString()
         btn.title = title
+        btn.imgPath = imgPath
         return btn
     }
 

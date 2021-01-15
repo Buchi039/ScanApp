@@ -5,6 +5,8 @@ import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanButtonModel
 import javafx.scene.Parent
 import javafx.scene.control.Button
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import tornadofx.*
 
@@ -35,29 +37,16 @@ class ScanbuttonView(username: String) : View() {
         return buttonGrid
     }
 
-    private fun genScanButton0(buttonData: ScanButtonModel): Button {
 
-        val button = button(buttonData.title) {
-            minHeight = 50.0
-            minWidth = 100.0
-            action {
-                println("Run Command: " + buttonData.command)
-                cmdController.runCmd(buttonData.command)
-            }
-        }.gridpaneConstraints {
-            columnRowIndex(buttonData.buttonNumber.toInt(), 0)
-            marginTopBottom(5.0)
-            marginLeftRight(5.0)
-            fillHeight = true
-        }
-        return button
-    }
-
-    private fun genScanButton(scanButtonModel: ScanButtonModel): Button {
+    fun genScanButton(scanButtonModel: ScanButtonModel): Button {
 
         val button = button(scanButtonModel.title) {
-            minHeight = 50.0
+            minHeight = 100.0
             minWidth = 100.0
+
+            maxHeight = 100.0
+            maxWidth = 100.0
+
             action {
                 println("Run Command: " + scanButtonModel.command)
                 cmdController.runCmd(scanButtonModel.command)
@@ -67,6 +56,16 @@ class ScanbuttonView(username: String) : View() {
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true
+        }
+
+        if (scanButtonModel.imgPath != "") {
+            var img = Image("file:${scanButtonModel.imgPath}")
+            var imgView = ImageView(img)
+            imgView.fitHeight = 70.0
+            imgView.fitWidth = 70.0
+            button.graphic = imgView
+            button.text = ""
+
         }
         return button
     }
