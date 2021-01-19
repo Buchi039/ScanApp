@@ -135,6 +135,7 @@ class Editor : View("User Editor") {
 
                     field("Mit Icon?") {
                         checkbox("", iconCheckboxProperty) {
+                            scanButtonImgCheckbox = this
                             action {
                                 if (isSelected)
                                     iconField.show()
@@ -254,10 +255,15 @@ class Editor : View("User Editor") {
                 imgFilenameProperty.unbindBidirectional(scanButtonImgCombobox.valueProperty())
 
             }
+
+
+
             scanButtonTitleField.bind(scanButton.titleProperty)
             scanButtonCommandField.bind(scanButton.commandProperty)
             scanButtonNumberField.bind(scanButton.buttonNumberProperty)
             scanButtonImgCombobox.bind(scanButton.imgFilenameProperty)
+            scanButtonImgCheckbox.bind((scanButton.imgFilename != "").toProperty())
+
             prevSelectionScanButton = scanButton
         }
     }
