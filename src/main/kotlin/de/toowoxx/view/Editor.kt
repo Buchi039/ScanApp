@@ -139,8 +139,11 @@ class Editor : View("User Editor") {
                             action {
                                 if (isSelected)
                                     iconField.show()
-                                else
+                                else {
                                     iconField.hide()
+                                    scanButtonImgCombobox.selectionModel == null
+                                }
+
                             }
 
                         }

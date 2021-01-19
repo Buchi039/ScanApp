@@ -3,6 +3,7 @@ package de.toowoxx.controller
 import de.toowoxx.view.AdminView
 import de.toowoxx.view.Editor
 import tornadofx.Controller
+import tornadofx.runLater
 
 class LoginController : Controller() {
 
@@ -20,13 +21,16 @@ class LoginController : Controller() {
                 adminView.replaceWith(Editor(), sizeToScene = true, centerOnScreen = true)
 
             } else {
-                println("Wrong!")
+                showLoginScreen("Login failed. Please try again.", true)
             }
         }
     }
 
-    fun showLoginScreen(message: String) {
+    fun showLoginScreen(message: String, shake: Boolean = false) {
         editor.replaceWith(adminView, sizeToScene = true, centerOnScreen = true)
+        runLater {
+            if (shake) adminView.shakeStage()
+        }
     }
 
     fun logout() {
