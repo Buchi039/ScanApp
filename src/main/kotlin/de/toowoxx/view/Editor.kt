@@ -5,10 +5,13 @@ import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanButtonModel
 import de.toowoxx.model.UserModel
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.stage.DirectoryChooser
 import tornadofx.*
+import java.io.File
 
 
 class Editor : View("User Editor") {
@@ -27,6 +30,7 @@ class Editor : View("User Editor") {
     var scanButtonNumberField: TextField by singleAssign()
     var scanButtonImgCheckbox: CheckBox by singleAssign()
     var scanButtonImgCombobox: ComboBox<String> by singleAssign()
+    var scanButtonScanPathField: TextField by singleAssign()
 
     var scanButtonFieldset = fieldset()
 
@@ -40,6 +44,7 @@ class Editor : View("User Editor") {
     var iconField: Field by singleAssign()
 
     val iconCheckboxProperty = SimpleBooleanProperty()
+    var directoryChooser: DirectoryChooser by singleAssign()
 
 
     override val root = hbox()
@@ -47,138 +52,188 @@ class Editor : View("User Editor") {
 
     init {
         with(root) {
+            minHeight = 510.0
+            borderpane {
+                center {
+                    tableview(userController.userList) {
+                        userTable = this
+                        column("User", UserModel::usernameProperty)
+                        // Edit the currently selected person
+                        selectionModel.selectedItemProperty().onChange {
+                            //prevSelectionUser = it
+                            editUser(it)
+                            if (it != null)
+                                scanButtonList.setAll(it.userButtons)
 
-            vbox() {
+                            scanButtonFieldset.hide()
+                        }
 
-                tableview(userController.userList) {
-                    userTable = this
-                    column("User", UserModel::usernameProperty)
-                    // Edit the currently selected person
-                    selectionModel.selectedItemProperty().onChange {
-                        //prevSelectionUser = it
-                        editUser(it)
-                        if (it != null)
-                            scanButtonList.setAll(it.userButtons)
-
-                        scanButtonFieldset.hide()
                     }
 
+                    bottom {
+                        hbox {
+                            button("Neuer User").action {
+                                newUser()
+                            }
+                            button("Löschen").action {
+                                deleteUser()
+                            }
+                            paddingTop = 10
+                        }
+                        paddingAll = 15
+                    }
                 }
-                hbox {
-                    button("Neuer User").action {
-                        newUser()
+            }
+
+
+            borderpane {
+                center {
+                    tableview(scanButtonList) {
+                        scanButtonTable = this
+                        column("Titel", ScanButtonModel::titleProperty)
+                        column("Command", ScanButtonModel::commandProperty)
+                        column("Nummer", ScanButtonModel::buttonNumber)
+
+
+                        selectionModel.selectedItemProperty().onChange {
+                            //prevSelectionScanButton = it
+                            editScanButton(it)
+                            scanButtonFieldset.show()
+                        }
                     }
-                    button("Löschen").action {
-                        deleteUser()
+                }
+                bottom {
+                    hbox {
+                        button("Neuer Scanbutton").action {
+                            newScanButton()
+                            paddingRight = 5
+                        }
+                        button("Profil löschen").action {
+                            deleteScanButton()
+                        }
+                        paddingTop = 10
                     }
-                    paddingTop = 10
                 }
                 paddingAll = 15
             }
 
 
-            vbox {
-                tableview(scanButtonList) {
-                    scanButtonTable = this
-                    column("Titel", ScanButtonModel::titleProperty)
-                    column("Command", ScanButtonModel::commandProperty)
-                    column("Nummer", ScanButtonModel::buttonNumber)
-
-
-                    selectionModel.selectedItemProperty().onChange {
-                        //prevSelectionScanButton = it
-                        editScanButton(it)
-                        scanButtonFieldset.show()
-                    }
-                }
-                hbox {
-                    button("Neuer Scanbutton").action {
-                        newScanButton()
-                        paddingRight = 5
-                    }
-                    button("Profil löschen").action {
-                        deleteScanButton()
-                    }
-                    paddingTop = 10
-                }
-                paddingAll = 15
-            }
-
-            form {
-                fieldset("User bearbeiten") {
-                    field("Name") {
-                        textfield() {
-                            nameField = this
+            borderpane {
+                center {
+                    minWidth = 400.0
+                    form {
+                        fieldset("User bearbeiten") {
+                            field("Name") {
+                                textfield() {
+                                    nameField = this
+                                }
+                            }
                         }
-                    }
-                }
-                fieldset("Scan Button bearbeiten") {
-                    scanButtonFieldset = this
-                    field("Titel") {
-                        textfield() {
-                            scanButtonTitleField = this
-                        }
-                    }
-                    field("Scan Profile") {
-                        textfield() {
-                            scanButtonCommandField = this
-                        }
-                    }
-                    field("Button Nr.") {
-                        textfield() {
-                            scanButtonNumberField = this
-                        }
-                    }
+                        fieldset("Scan Button bearbeiten") {
+                            scanButtonFieldset = this
+                            field("Titel") {
+                                textfield() {
+                                    scanButtonTitleField = this
+                                }
+                            }
+                            field("Scan Profile") {
+                                textfield() {
+                                    scanButtonCommandField = this
+                                }
+                            }
+
+                            field("Pfad") {
+                                textfield {
+                                    scanButtonScanPathField = this
+                                }
+                                button("Wählen") {
+                                    action {
+                                        chooseDirectory {
+                                            directoryChooser = this
+                                            initialDirectory = File("src")
+
+                                            setOnAction { e ->
+                                                var selectedDirectory = directoryChooser.showDialog(primaryStage)
+                                                scanButtonScanPathField.text = selectedDirectory.absolutePath
+                                            }
+                                        }
+                                    }
+                                    minWidth = 60.0
+                                    alignment = Pos.BASELINE_RIGHT
+                                }
+                            }
 
 
 
 
-                    field("Mit Icon?") {
-                        checkbox("", iconCheckboxProperty) {
-                            scanButtonImgCheckbox = this
-                            action {
-                                if (isSelected)
-                                    iconField.show()
-                                else {
-                                    iconField.hide()
-                                    scanButtonImgCombobox.selectionModel == null
+                            field("Button Nr.") {
+                                textfield() {
+                                    scanButtonNumberField = this
+                                }
+                            }
+
+
+
+
+                            field("Mit Icon?") {
+                                checkbox("", iconCheckboxProperty) {
+                                    scanButtonImgCheckbox = this
+
+                                    action {
+                                        if (isSelected)
+                                            iconField.show()
+                                        else {
+                                            iconField.hide()
+                                            scanButtonImgCombobox.value = ""
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                            fieldset {
+                                field("Auswahl") {
+                                    combobox<String> {
+                                        scanButtonImgCombobox = this
+                                        items = mainController.getAvailableIconNames().asObservable()
+                                    }
+                                    scanButtonImgCombobox.setOnAction {
+
+                                        var iconPath =
+                                            mainController.getIconPath(scanButtonImgCombobox.value.toString())
+                                        var imageView = ImageView(Image("file:$iconPath"))
+                                        imageView.fitHeight = 70.0
+                                        imageView.fitWidth = 70.0
+                                        iconButton.graphic = imageView
+                                    }
                                 }
 
+                                iconField = field("Vorschau") {
+                                    iconButton = button { }
+                                }
+                                hiddenWhen(!iconCheckboxProperty)
                             }
+                        }.hide()
 
-                        }
-                    }
-
-                    fieldset {
-                        field("Auswahl") {
-                            combobox<String> {
-                                scanButtonImgCombobox = this
-                                items = mainController.getAvailableIconNames().asObservable()
-                            }
-                            scanButtonImgCombobox.setOnAction { event ->
-
-                                var iconPath = mainController.getIconPath(scanButtonImgCombobox.value.toString())
-                                var imageView = ImageView(Image("file:$iconPath"))
-                                imageView.fitHeight = 70.0
-                                imageView.fitWidth = 70.0
-                                iconButton.graphic = imageView
-                            }
+                        val button = Button("Select Directory")
+                        button.setOnAction { e ->
+                            val selectedDirectory = directoryChooser.showDialog(primaryStage)
+                            println(selectedDirectory.absolutePath)
                         }
 
-                        iconField = field("Vorschau") {
-                            iconButton = button { }
+
+
+                        bottom {
+                            hbox {
+                                button("Speichern").action {
+                                    saveUser()
+                                }
+                            }
+                            paddingAll = 15
                         }
-                        hiddenWhen(!iconCheckboxProperty)
-                    }
-                }.hide()
-
-
-                hbox {
-                    button("Speichern").action {
-                        saveUser()
                     }
                 }
-                paddingAll = 15
             }
         }
     }
@@ -234,6 +289,7 @@ class Editor : View("User Editor") {
         button.command = "Neu"
         button.title = "Neu"
         button.buttonNumber = "-1"
+        button.imgFilename = ""
         scanButtonList.add(button)
 
     }
@@ -256,7 +312,7 @@ class Editor : View("User Editor") {
                 commandProperty.unbindBidirectional(scanButtonCommandField.textProperty())
                 buttonNumberProperty.unbindBidirectional(scanButtonNumberField.textProperty())
                 imgFilenameProperty.unbindBidirectional(scanButtonImgCombobox.valueProperty())
-
+                scanPathProperty.unbindBidirectional(scanButtonScanPathField.textProperty())
             }
 
 
@@ -266,6 +322,7 @@ class Editor : View("User Editor") {
             scanButtonNumberField.bind(scanButton.buttonNumberProperty)
             scanButtonImgCombobox.bind(scanButton.imgFilenameProperty)
             scanButtonImgCheckbox.bind((scanButton.imgFilename != "").toProperty())
+            scanButtonScanPathField.bind(scanButton.scanPathProperty)
 
             prevSelectionScanButton = scanButton
         }
