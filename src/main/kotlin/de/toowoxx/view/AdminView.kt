@@ -34,7 +34,6 @@ class AdminView : View("Adminpanel") {
                 action {
                     model.commit {
                         loginController.tryLogin(model.username.value, model.password.value)
-
                     }
                 }
             }
@@ -46,8 +45,8 @@ class AdminView : View("Adminpanel") {
         model.validate(decorateErrors = false)
     }
 
-    fun clear() {
-        model.username.value = " "
-        model.password.value = " "
+    fun clearLogin() {
+        model.username.value = ""
+        model.password.value = ""
     }
 }

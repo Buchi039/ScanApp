@@ -16,7 +16,7 @@ class LoginController : Controller() {
 
             if (successfulLogin) {
                 println("Success")
-                adminView.clear()
+                adminView.clearLogin()
                 adminView.replaceWith(Editor(), sizeToScene = true, centerOnScreen = true)
 
             } else {

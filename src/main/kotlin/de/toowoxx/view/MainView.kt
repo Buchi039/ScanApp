@@ -19,7 +19,6 @@ class MainView : View() {
 
 
     init {
-
         menubar = menubar {
             menu("Bearbeiten") {
                 item("Admin").action {
@@ -35,7 +34,7 @@ class MainView : View() {
                 }
             }
         }
-        
+
         userController.init()
         userbuttons = genUserButtonsGridpane(userController.getUsernames())
         root.add(userbuttons)
@@ -55,7 +54,7 @@ class MainView : View() {
     fun generateUserButtons(userList: List<String>): List<Button> {
         val buttonList = mutableListOf<Button>()
         for ((buttonCount, user) in userList.withIndex()) {
-            var button = button(user) {
+            val button = button(user) {
                 minWidth = 100.0
                 minHeight = 50.0
                 action {
