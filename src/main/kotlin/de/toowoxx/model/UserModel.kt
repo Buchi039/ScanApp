@@ -3,14 +3,11 @@ package de.toowoxx.model
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
 import tornadofx.*
 import javax.json.JsonObject
 
 
-class UserModel(
-    id: Int, username: String, userScanButtons: ObservableList<ScanButtonModel>
-) : JsonModel {
+class UserModel() : JsonModel {
 
     private val idProperty = SimpleIntegerProperty()
     var id by idProperty
@@ -63,7 +60,7 @@ data class UserModelJson(
         for (it in userButtons) {
             buttons.add(it.toButtonData())
         }
-        var userModel = UserModel(id, username, buttons)
+        var userModel = UserModel()
         userModel.id = id
         userModel.username = username
         userModel.userButtons = buttons

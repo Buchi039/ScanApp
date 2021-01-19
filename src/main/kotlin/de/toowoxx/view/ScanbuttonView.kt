@@ -1,6 +1,7 @@
 package de.toowoxx.view
 
 import de.toowoxx.controller.CommandController
+import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanButtonModel
 import javafx.scene.Parent
@@ -11,6 +12,7 @@ import javafx.scene.layout.GridPane
 import tornadofx.*
 
 class ScanbuttonView(username: String) : View() {
+    val mainController: MainController by inject()
 
     val userController: UserController by inject()
     val cmdController: CommandController by inject()
@@ -58,8 +60,9 @@ class ScanbuttonView(username: String) : View() {
             fillHeight = true
         }
 
-        if (scanButtonModel.imgPath != "") {
-            var img = Image("file:${scanButtonModel.imgPath}")
+        if (scanButtonModel.imgFilename != "") {
+            var iconPath = mainController.getIconPath(scanButtonModel.imgFilename)
+            var img = Image("file:$iconPath")
             var imgView = ImageView(img)
             imgView.fitHeight = 70.0
             imgView.fitWidth = 70.0

@@ -6,12 +6,7 @@ import tornadofx.*
 import javax.json.JsonObject
 
 
-class ScanButtonModel(
-    id: Int,
-    command: String,
-    buttonNumber: Int,
-    title: String
-) : JsonModel {
+class ScanButtonModel() : JsonModel {
     val idProperty = SimpleIntegerProperty()
     var id by idProperty
 
@@ -24,8 +19,8 @@ class ScanButtonModel(
     val titleProperty = SimpleStringProperty()
     var title by titleProperty
 
-    val imgPathProperty = SimpleStringProperty()
-    var imgPath by imgPathProperty
+    val imgFilenameProperty = SimpleStringProperty()
+    var imgFilename by imgFilenameProperty
 
 
     override fun updateModel(json: JsonObject) {
@@ -34,7 +29,7 @@ class ScanButtonModel(
             command = string("command")
             buttonNumber = string("buttonNumber")!!
             title = string("title")
-            imgPath = string("imgPath")
+            imgFilename = string("imgFilename")
         }
     }
 
@@ -44,12 +39,12 @@ class ScanButtonModel(
             add("command", command)
             add("buttonNumber", buttonNumber)
             add("title", title)
-            add("imgPath", imgPath)
+            add("imgFilename", imgFilename)
         }
     }
 
     fun toButtonDataJson(): ButtonDataJson {
-        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title, imgPath)
+        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title, imgFilename)
         return buttonDataJson
     }
 }
@@ -64,12 +59,12 @@ data class ButtonDataJson(
 ) {
 
     fun toButtonData(): ScanButtonModel {
-        var btn = ScanButtonModel(id, command, buttonNumber, title)
+        var btn = ScanButtonModel()
         btn.id = id
         btn.command = command
         btn.buttonNumber = buttonNumber.toString()
         btn.title = title
-        btn.imgPath = imgPath
+        btn.imgFilename = imgPath
         return btn
     }
 

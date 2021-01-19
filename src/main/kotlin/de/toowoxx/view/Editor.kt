@@ -5,10 +5,7 @@ import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanButtonModel
 import de.toowoxx.model.UserModel
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.scene.control.Button
-import javafx.scene.control.CheckBox
-import javafx.scene.control.TableView
-import javafx.scene.control.TextField
+import javafx.scene.control.*
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import tornadofx.*
@@ -16,28 +13,28 @@ import tornadofx.*
 
 class Editor : View("User Editor") {
     val mainController: MainController by inject()
+    val mainView: MainView by inject()
+    val userController: UserController by inject()
 
-    override val root = hbox()
+
     var nameField: TextField by singleAssign()
 
+    var scanButtonList = observableListOf<ScanButtonModel>()
+    var scanButtonTable: TableView<ScanButtonModel> by singleAssign()
 
     var scanButtonTitleField: TextField by singleAssign()
     var scanButtonCommandField: TextField by singleAssign()
     var scanButtonNumberField: TextField by singleAssign()
     var scanButtonImgCheckbox: CheckBox by singleAssign()
+    var scanButtonImgCombobox: ComboBox<String> by singleAssign()
 
+    var scanButtonFieldset = fieldset()
 
     var userTable: TableView<UserModel> by singleAssign()
-    val userController: UserController by inject()
 
     var prevSelectionUser: UserModel? = null
     var prevSelectionScanButton: ScanButtonModel? = null
 
-
-    var scanButtonList = observableListOf<ScanButtonModel>()
-    var scanButtonTable: TableView<ScanButtonModel> by singleAssign()
-
-    var scanButtonFieldset = fieldset()
 
     var iconButton: Button by singleAssign()
     var iconField: Field by singleAssign()
@@ -45,7 +42,7 @@ class Editor : View("User Editor") {
     val iconCheckboxProperty = SimpleBooleanProperty()
 
 
-    val mainView: MainView by inject()
+    override val root = hbox()
 
 
     init {
@@ -56,11 +53,10 @@ class Editor : View("User Editor") {
                 tableview(userController.userList) {
                     userTable = this
                     column("User", UserModel::usernameProperty)
-                    title = "Test123"
                     // Edit the currently selected person
                     selectionModel.selectedItemProperty().onChange {
+                        //prevSelectionUser = it
                         editUser(it)
-                        prevSelectionUser = it
                         if (it != null)
                             scanButtonList.setAll(it.userButtons)
 
@@ -90,8 +86,8 @@ class Editor : View("User Editor") {
 
 
                     selectionModel.selectedItemProperty().onChange {
+                        //prevSelectionScanButton = it
                         editScanButton(it)
-                        prevSelectionScanButton = it
                         scanButtonFieldset.show()
                     }
                 }
@@ -151,12 +147,13 @@ class Editor : View("User Editor") {
 
                     fieldset {
                         field("Auswahl") {
-                            var iconCombo = combobox<String> {
+                            combobox<String> {
+                                scanButtonImgCombobox = this
                                 items = mainController.getAvailableIconNames().asObservable()
                             }
-                            iconCombo.setOnAction { event ->
+                            scanButtonImgCombobox.setOnAction { event ->
 
-                                var iconPath = mainController.getIconPath(iconCombo.value.toString())
+                                var iconPath = mainController.getIconPath(scanButtonImgCombobox.value.toString())
                                 var imageView = ImageView(Image("file:$iconPath"))
                                 imageView.fitHeight = 70.0
                                 imageView.fitWidth = 70.0
@@ -215,7 +212,7 @@ class Editor : View("User Editor") {
     }
 
     private fun newUser() {
-        var newUser = UserModel(userController.userList.last().id + 1, "Neu", observableListOf())
+        var newUser = UserModel()
         newUser.username = "Neu"
         newUser.id = userController.userList.last().id + 1
         userController.userList.add(newUser)
@@ -225,25 +222,26 @@ class Editor : View("User Editor") {
 
     private fun newScanButton() {
         val user = userTable.selectedItem!!
-        var button = ScanButtonModel(99, "cmd", 2, "title")
+        var button = ScanButtonModel()
         if (scanButtonList.isEmpty())
             button.id = 1
         else
             button.id = scanButtonList.last().id + 1
-        button.command = "cmd"
-        button.title = "neu"
-        button.buttonNumber = "99"
+        button.command = "Neu"
+        button.title = "Neu"
+        button.buttonNumber = "-1"
         scanButtonList.add(button)
 
     }
 
-    private fun editUser(person: UserModel?) {
-        if (person != null) {
+    private fun editUser(user: UserModel?) {
+
+        if (user != null) {
             prevSelectionUser?.apply {
                 usernameProperty.unbindBidirectional(nameField.textProperty())
             }
-            nameField.bind(person.usernameProperty)
-            prevSelectionUser = person
+            nameField.bind(user.usernameProperty)
+            prevSelectionUser = user
         }
     }
 
@@ -253,11 +251,13 @@ class Editor : View("User Editor") {
                 titleProperty.unbindBidirectional(scanButtonTitleField.textProperty())
                 commandProperty.unbindBidirectional(scanButtonCommandField.textProperty())
                 buttonNumberProperty.unbindBidirectional(scanButtonNumberField.textProperty())
+                imgFilenameProperty.unbindBidirectional(scanButtonImgCombobox.valueProperty())
 
             }
             scanButtonTitleField.bind(scanButton.titleProperty)
             scanButtonCommandField.bind(scanButton.commandProperty)
             scanButtonNumberField.bind(scanButton.buttonNumberProperty)
+            scanButtonImgCombobox.bind(scanButton.imgFilenameProperty)
             prevSelectionScanButton = scanButton
         }
     }
