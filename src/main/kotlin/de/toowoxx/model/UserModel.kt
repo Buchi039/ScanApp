@@ -16,7 +16,7 @@ class UserModel() : JsonModel {
     var username by usernameProperty
 
 
-    var userButtons = FXCollections.observableArrayList<ScanButtonModel>()
+    var userButtons = FXCollections.observableArrayList<ScanProfileModel>()
 
 
     override fun updateModel(json: JsonObject) {
@@ -37,9 +37,9 @@ class UserModel() : JsonModel {
 
     fun toUserModelJson(): UserModelJson {
 
-        var buttons = mutableListOf<ButtonDataJson>()
+        var buttons = mutableListOf<ScanProfileJson>()
         for (it in userButtons) {
-            buttons.add(it.toButtonDataJson())
+            buttons.add(it.toScanProfileJson())
         }
         var user = UserModelJson(id, username, buttons)
         return user
@@ -50,15 +50,15 @@ data class UserModelJson(
 
     var id: Int,
     var username: String,
-    var userButtons: MutableList<ButtonDataJson>
+    var userButtons: MutableList<ScanProfileJson>
 
 ) {
 
     fun toUserModel(): UserModel {
-        var buttons = observableListOf<ScanButtonModel>()
+        var buttons = observableListOf<ScanProfileModel>()
 
         for (it in userButtons) {
-            buttons.add(it.toButtonData())
+            buttons.add(it.toScanProfileData())
         }
         var userModel = UserModel()
         userModel.id = id

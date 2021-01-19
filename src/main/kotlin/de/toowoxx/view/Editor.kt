@@ -2,7 +2,7 @@ package de.toowoxx.view
 
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
-import de.toowoxx.model.ScanButtonModel
+import de.toowoxx.model.ScanProfileModel
 import de.toowoxx.model.UserModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Pos
@@ -22,22 +22,22 @@ class Editor : View("User Editor") {
 
     var nameField: TextField by singleAssign()
 
-    var scanButtonList = observableListOf<ScanButtonModel>()
-    var scanButtonTable: TableView<ScanButtonModel> by singleAssign()
+    var scanButtonList = observableListOf<ScanProfileModel>()
+    var scanProfileTable: TableView<ScanProfileModel> by singleAssign()
 
-    var scanButtonTitleField: TextField by singleAssign()
-    var scanButtonCommandField: TextField by singleAssign()
-    var scanButtonNumberField: TextField by singleAssign()
-    var scanButtonImgCheckbox: CheckBox by singleAssign()
-    var scanButtonImgCombobox: ComboBox<String> by singleAssign()
-    var scanButtonScanPathField: TextField by singleAssign()
+    var scanProfileTitleField: TextField by singleAssign()
+    var scanProfileCommandField: TextField by singleAssign()
+    var scanProfileNumberField: TextField by singleAssign()
+    var scanProfileImgCheckbox: CheckBox by singleAssign()
+    var scanProfileImgCombobox: ComboBox<String> by singleAssign()
+    var scanProfileScanPathField: TextField by singleAssign()
 
     var scanButtonFieldset = fieldset()
 
     var userTable: TableView<UserModel> by singleAssign()
 
     var prevSelectionUser: UserModel? = null
-    var prevSelectionScanButton: ScanButtonModel? = null
+    var prevSelectionScanProfile: ScanProfileModel? = null
 
 
     var iconButton: Button by singleAssign()
@@ -89,10 +89,10 @@ class Editor : View("User Editor") {
             borderpane {
                 center {
                     tableview(scanButtonList) {
-                        scanButtonTable = this
-                        column("Titel", ScanButtonModel::titleProperty)
-                        column("Command", ScanButtonModel::commandProperty)
-                        column("Nummer", ScanButtonModel::buttonNumber)
+                        scanProfileTable = this
+                        column("Titel", ScanProfileModel::titleProperty)
+                        column("Command", ScanProfileModel::commandProperty)
+                        column("Nummer", ScanProfileModel::buttonNumber)
 
 
                         selectionModel.selectedItemProperty().onChange {
@@ -129,22 +129,22 @@ class Editor : View("User Editor") {
                                 }
                             }
                         }
-                        fieldset("Scan Button bearbeiten") {
+                        fieldset("Scan Profil bearbeiten") {
                             scanButtonFieldset = this
                             field("Titel") {
                                 textfield() {
-                                    scanButtonTitleField = this
+                                    scanProfileTitleField = this
                                 }
                             }
                             field("Scan Profile") {
                                 textfield() {
-                                    scanButtonCommandField = this
+                                    scanProfileCommandField = this
                                 }
                             }
 
                             field("Pfad") {
                                 textfield {
-                                    scanButtonScanPathField = this
+                                    scanProfileScanPathField = this
                                 }
                                 button("Wählen") {
                                     action {
@@ -154,7 +154,7 @@ class Editor : View("User Editor") {
 
                                             setOnAction { e ->
                                                 var selectedDirectory = directoryChooser.showDialog(primaryStage)
-                                                scanButtonScanPathField.text = selectedDirectory.absolutePath
+                                                scanProfileScanPathField.text = selectedDirectory.absolutePath
                                             }
                                         }
                                     }
@@ -168,7 +168,7 @@ class Editor : View("User Editor") {
 
                             field("Button Nr.") {
                                 textfield() {
-                                    scanButtonNumberField = this
+                                    scanProfileNumberField = this
                                 }
                             }
 
@@ -177,14 +177,14 @@ class Editor : View("User Editor") {
 
                             field("Mit Icon?") {
                                 checkbox("", iconCheckboxProperty) {
-                                    scanButtonImgCheckbox = this
+                                    scanProfileImgCheckbox = this
 
                                     action {
                                         if (isSelected)
                                             iconField.show()
                                         else {
                                             iconField.hide()
-                                            scanButtonImgCombobox.value = ""
+                                            scanProfileImgCombobox.value = ""
                                         }
 
                                     }
@@ -195,13 +195,13 @@ class Editor : View("User Editor") {
                             fieldset {
                                 field("Auswahl") {
                                     combobox<String> {
-                                        scanButtonImgCombobox = this
+                                        scanProfileImgCombobox = this
                                         items = mainController.getAvailableIconNames().asObservable()
                                     }
-                                    scanButtonImgCombobox.setOnAction {
+                                    scanProfileImgCombobox.setOnAction {
 
                                         var iconPath =
-                                            mainController.getIconPath(scanButtonImgCombobox.value.toString())
+                                            mainController.getIconPath(scanProfileImgCombobox.value.toString())
                                         var imageView = ImageView(Image("file:$iconPath"))
                                         imageView.fitHeight = 70.0
                                         imageView.fitWidth = 70.0
@@ -253,7 +253,7 @@ class Editor : View("User Editor") {
     }
 
     private fun deleteScanButton() {
-        val deletedScanButton = scanButtonTable.selectedItem!!
+        val deletedScanButton = scanProfileTable.selectedItem!!
 
         for (button in scanButtonList) {
             if (button.id == deletedScanButton.id) {
@@ -267,7 +267,7 @@ class Editor : View("User Editor") {
         selectedUser.userButtons.addAll(scanButtonList)
 
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-        prevSelectionScanButton = null
+        prevSelectionScanProfile = null
     }
 
     private fun newUser() {
@@ -281,7 +281,7 @@ class Editor : View("User Editor") {
 
     private fun newScanButton() {
         val user = userTable.selectedItem!!
-        var button = ScanButtonModel()
+        var button = ScanProfileModel()
         if (scanButtonList.isEmpty())
             button.id = 1
         else
@@ -305,26 +305,26 @@ class Editor : View("User Editor") {
         }
     }
 
-    private fun editScanButton(scanButton: ScanButtonModel?) {
-        if (scanButton != null) {
-            prevSelectionScanButton?.apply {
-                titleProperty.unbindBidirectional(scanButtonTitleField.textProperty())
-                commandProperty.unbindBidirectional(scanButtonCommandField.textProperty())
-                buttonNumberProperty.unbindBidirectional(scanButtonNumberField.textProperty())
-                imgFilenameProperty.unbindBidirectional(scanButtonImgCombobox.valueProperty())
-                scanPathProperty.unbindBidirectional(scanButtonScanPathField.textProperty())
+    private fun editScanButton(scanProfile: ScanProfileModel?) {
+        if (scanProfile != null) {
+            prevSelectionScanProfile?.apply {
+                titleProperty.unbindBidirectional(scanProfileTitleField.textProperty())
+                commandProperty.unbindBidirectional(scanProfileCommandField.textProperty())
+                buttonNumberProperty.unbindBidirectional(scanProfileNumberField.textProperty())
+                imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
+                scanPathProperty.unbindBidirectional(scanProfileScanPathField.textProperty())
             }
 
 
 
-            scanButtonTitleField.bind(scanButton.titleProperty)
-            scanButtonCommandField.bind(scanButton.commandProperty)
-            scanButtonNumberField.bind(scanButton.buttonNumberProperty)
-            scanButtonImgCombobox.bind(scanButton.imgFilenameProperty)
-            scanButtonImgCheckbox.bind((scanButton.imgFilename != "").toProperty())
-            scanButtonScanPathField.bind(scanButton.scanPathProperty)
+            scanProfileTitleField.bind(scanProfile.titleProperty)
+            scanProfileCommandField.bind(scanProfile.commandProperty)
+            scanProfileNumberField.bind(scanProfile.buttonNumberProperty)
+            scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
+            scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
+            scanProfileScanPathField.bind(scanProfile.scanPathProperty)
 
-            prevSelectionScanButton = scanButton
+            prevSelectionScanProfile = scanProfile
         }
     }
 
@@ -344,9 +344,9 @@ class Editor : View("User Editor") {
     }
 
     private fun clearScanButtonEdit() {
-        scanButtonTitleField.clear()
-        scanButtonNumberField.clear()
-        scanButtonCommandField.clear()
+        scanProfileTitleField.clear()
+        scanProfileNumberField.clear()
+        scanProfileCommandField.clear()
     }
 
 }

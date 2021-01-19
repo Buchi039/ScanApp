@@ -3,7 +3,7 @@ package de.toowoxx.view
 import de.toowoxx.controller.CommandController
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
-import de.toowoxx.model.ScanButtonModel
+import de.toowoxx.model.ScanProfileModel
 import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.image.Image
@@ -40,9 +40,9 @@ class ScanbuttonView(username: String) : View() {
     }
 
 
-    fun genScanButton(scanButtonModel: ScanButtonModel): Button {
+    fun genScanButton(scanProfileModel: ScanProfileModel): Button {
 
-        val button = button(scanButtonModel.title) {
+        val button = button(scanProfileModel.title) {
             minHeight = 100.0
             minWidth = 100.0
 
@@ -50,18 +50,18 @@ class ScanbuttonView(username: String) : View() {
             maxWidth = 100.0
 
             action {
-                println("Run Command: " + scanButtonModel.command)
-                cmdController.runCmd(scanButtonModel.command)
+                println("Run Command: " + scanProfileModel.command)
+                cmdController.runCmd(scanProfileModel.command)
             }
         }.gridpaneConstraints {
-            columnRowIndex(scanButtonModel.buttonNumber.toInt(), 0)
+            columnRowIndex(scanProfileModel.buttonNumber.toInt(), 0)
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true
         }
 
-        if (scanButtonModel.imgFilename != "") {
-            var iconPath = mainController.getIconPath(scanButtonModel.imgFilename)
+        if (scanProfileModel.imgFilename != "") {
+            var iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
             var img = Image("file:$iconPath")
             var imgView = ImageView(img)
             imgView.fitHeight = 70.0

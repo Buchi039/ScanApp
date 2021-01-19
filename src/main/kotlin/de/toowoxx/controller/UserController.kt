@@ -2,7 +2,7 @@ package de.toowoxx.controller
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import de.toowoxx.model.ButtonDataJson
+import de.toowoxx.model.ScanProfileJson
 import de.toowoxx.model.UserModel
 import de.toowoxx.model.UserModelJson
 import javafx.collections.FXCollections
@@ -49,9 +49,9 @@ class UserController : Controller() {
 
     fun generateDummyUsers(): MutableList<UserModelJson> {
 
-        val button1 = ButtonDataJson(1, "Keka", 1, "Keka", "save.png", "scans/")
-        val button2 = ButtonDataJson(2, "Terminal", 2, "Terminal", "", "scans/")
-        val button3 = ButtonDataJson(3, "CotEditor", 3, "CotEditor", "testicon.png", "scans/")
+        val button1 = ScanProfileJson(1, "Keka", 1, "Keka", "save.png", "scans/")
+        val button2 = ScanProfileJson(2, "Terminal", 2, "Terminal", "", "scans/")
+        val button3 = ScanProfileJson(3, "CotEditor", 3, "CotEditor", "testicon.png", "scans/")
 
 
         var buttonList = mutableListOf(button1, button2, button3)

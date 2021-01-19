@@ -6,7 +6,7 @@ import tornadofx.*
 import javax.json.JsonObject
 
 
-class ScanButtonModel() : JsonModel {
+class ScanProfileModel() : JsonModel {
     val idProperty = SimpleIntegerProperty()
     var id by idProperty
 
@@ -48,14 +48,14 @@ class ScanButtonModel() : JsonModel {
         }
     }
 
-    fun toButtonDataJson(): ButtonDataJson {
-        var buttonDataJson = ButtonDataJson(id, command, buttonNumber.toInt(), title, imgFilename, scanPath)
+    fun toScanProfileJson(): ScanProfileJson {
+        var buttonDataJson = ScanProfileJson(id, command, buttonNumber.toInt(), title, imgFilename, scanPath)
         return buttonDataJson
     }
 }
 
 
-data class ButtonDataJson(
+data class ScanProfileJson(
     val id: Int,
     val command: String,
     val buttonNumber: Int,
@@ -64,8 +64,8 @@ data class ButtonDataJson(
     val scanPath: String
 ) {
 
-    fun toButtonData(): ScanButtonModel {
-        var btn = ScanButtonModel()
+    fun toScanProfileData(): ScanProfileModel {
+        var btn = ScanProfileModel()
         btn.id = id
         btn.command = command
         btn.buttonNumber = buttonNumber.toString()
