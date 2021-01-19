@@ -10,8 +10,8 @@ class ScanProfileModel() : JsonModel {
     val idProperty = SimpleIntegerProperty()
     var id by idProperty
 
-    val commandProperty = SimpleStringProperty()
-    var command by commandProperty
+    val naspProfileProperty = SimpleStringProperty()
+    var napsProfile by naspProfileProperty
 
     val buttonNumberProperty = SimpleStringProperty()
     var buttonNumber by buttonNumberProperty
@@ -29,7 +29,7 @@ class ScanProfileModel() : JsonModel {
     override fun updateModel(json: JsonObject) {
         with(json) {
             id = int("id")!!
-            command = string("command")
+            napsProfile = string("napsProfile")
             buttonNumber = string("buttonNumber")!!
             title = string("title")
             imgFilename = string("imgFilename")
@@ -40,7 +40,7 @@ class ScanProfileModel() : JsonModel {
     override fun toJSON(json: JsonBuilder) {
         with(json) {
             add("id", id)
-            add("command", command)
+            add("napsProfile", napsProfile)
             add("buttonNumber", buttonNumber)
             add("title", title)
             add("imgFilename", imgFilename)
@@ -49,7 +49,7 @@ class ScanProfileModel() : JsonModel {
     }
 
     fun toScanProfileJson(): ScanProfileJson {
-        var buttonDataJson = ScanProfileJson(id, command, buttonNumber.toInt(), title, imgFilename, scanPath)
+        var buttonDataJson = ScanProfileJson(id, napsProfile, buttonNumber.toInt(), title, imgFilename, scanPath)
         return buttonDataJson
     }
 }
@@ -67,7 +67,7 @@ data class ScanProfileJson(
     fun toScanProfileData(): ScanProfileModel {
         var btn = ScanProfileModel()
         btn.id = id
-        btn.command = command
+        btn.napsProfile = command
         btn.buttonNumber = buttonNumber.toString()
         btn.title = title
         btn.imgFilename = imgPath

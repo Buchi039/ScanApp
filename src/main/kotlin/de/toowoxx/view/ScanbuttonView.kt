@@ -50,8 +50,9 @@ class ScanbuttonView(username: String) : View() {
             maxWidth = 100.0
 
             action {
-                println("Run Command: " + scanProfileModel.command)
-                cmdController.runCmd(scanProfileModel.command)
+                println("Run Command: " + scanProfileModel.napsProfile)
+                //cmdController.runCmd(scanProfileModel.napsProfile)
+                cmdController.runCmd(scanProfileModel)
             }
         }.gridpaneConstraints {
             columnRowIndex(scanProfileModel.buttonNumber.toInt(), 0)

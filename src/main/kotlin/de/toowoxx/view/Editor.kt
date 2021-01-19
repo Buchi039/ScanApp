@@ -91,7 +91,7 @@ class Editor : View("User Editor") {
                     tableview(scanButtonList) {
                         scanProfileTable = this
                         column("Titel", ScanProfileModel::titleProperty)
-                        column("Command", ScanProfileModel::commandProperty)
+                        column("NAPS Profile", ScanProfileModel::naspProfileProperty)
                         column("Nummer", ScanProfileModel::buttonNumber)
 
 
@@ -104,14 +104,16 @@ class Editor : View("User Editor") {
                 }
                 bottom {
                     hbox {
-                        button("Neuer Scanbutton").action {
-                            newScanButton()
-                            paddingRight = 5
+                        button("Neuer Scanbutton") {
+                            action {
+                                newScanButton()
+                            }
                         }
-                        button("Profil löschen").action {
-                            deleteScanButton()
+                        button("Profil löschen") {
+                            action {
+                                deleteScanButton()
+                            }
                         }
-                        paddingTop = 10
                     }
                 }
                 paddingAll = 15
@@ -150,7 +152,7 @@ class Editor : View("User Editor") {
                                     action {
                                         chooseDirectory {
                                             directoryChooser = this
-                                            initialDirectory = File("src")
+                                            initialDirectory = File("/")
 
                                             setOnAction { e ->
                                                 var selectedDirectory = directoryChooser.showDialog(primaryStage)
@@ -163,17 +165,11 @@ class Editor : View("User Editor") {
                                 }
                             }
 
-
-
-
                             field("Button Nr.") {
                                 textfield() {
                                     scanProfileNumberField = this
                                 }
                             }
-
-
-
 
                             field("Mit Icon?") {
                                 checkbox("", iconCheckboxProperty) {
@@ -221,8 +217,6 @@ class Editor : View("User Editor") {
                             val selectedDirectory = directoryChooser.showDialog(primaryStage)
                             println(selectedDirectory.absolutePath)
                         }
-
-
 
                         bottom {
                             hbox {
@@ -286,7 +280,7 @@ class Editor : View("User Editor") {
             button.id = 1
         else
             button.id = scanButtonList.last().id + 1
-        button.command = "Neu"
+        button.napsProfile = "Neu"
         button.title = "Neu"
         button.buttonNumber = "-1"
         button.imgFilename = ""
@@ -309,7 +303,7 @@ class Editor : View("User Editor") {
         if (scanProfile != null) {
             prevSelectionScanProfile?.apply {
                 titleProperty.unbindBidirectional(scanProfileTitleField.textProperty())
-                commandProperty.unbindBidirectional(scanProfileCommandField.textProperty())
+                naspProfileProperty.unbindBidirectional(scanProfileCommandField.textProperty())
                 buttonNumberProperty.unbindBidirectional(scanProfileNumberField.textProperty())
                 imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
                 scanPathProperty.unbindBidirectional(scanProfileScanPathField.textProperty())
@@ -318,7 +312,7 @@ class Editor : View("User Editor") {
 
 
             scanProfileTitleField.bind(scanProfile.titleProperty)
-            scanProfileCommandField.bind(scanProfile.commandProperty)
+            scanProfileCommandField.bind(scanProfile.naspProfileProperty)
             scanProfileNumberField.bind(scanProfile.buttonNumberProperty)
             scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
             scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
