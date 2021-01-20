@@ -53,21 +53,25 @@ class Editor : View("User Editor") {
     init {
         with(root) {
             minHeight = 510.0
+
+            /** Spalte 1 mit Auswahl des Users
+             * Besteht aus Borderpane
+             * Center -> Tabelview
+             * Bottom -> Buttons zum Neu erstellen / löschen
+             * */
             borderpane {
                 center {
                     tableview(userController.userList) {
                         userTable = this
                         column("User", UserModel::usernameProperty)
-                        // Edit the currently selected person
+                        // Edit the currently selected User
                         selectionModel.selectedItemProperty().onChange {
                             //prevSelectionUser = it
                             editUser(it)
                             if (it != null)
                                 scanButtonList.setAll(it.userButtons)
-
                             scanButtonFieldset.hide()
                         }
-
                     }
 
                     bottom {
@@ -85,7 +89,11 @@ class Editor : View("User Editor") {
                 }
             }
 
-
+            /** Spalte 2 mit Auswahl des Scanprofils von User
+             * * Besteht aus Borderpane
+             * Center -> Tabelview mit ScanProfiles
+             * Bottom -> Buttons zum Neu erstellen / löschen
+             * */
             borderpane {
                 center {
                     tableview(scanButtonList) {
@@ -106,7 +114,7 @@ class Editor : View("User Editor") {
                     hbox {
                         button("Neuer Scanbutton") {
                             action {
-                                newScanButton()
+                                newScanProfile()
                             }
                         }
                         button("Profil löschen") {
@@ -119,7 +127,10 @@ class Editor : View("User Editor") {
                 paddingAll = 15
             }
 
-
+            /** Spalte 3 mit Feldern zum editieren der Userdaten und Scanprofil Daten
+             * Center -> Felder zum editieren der Daten
+             * Bottom -> Button zum speicher der Daten
+             */
             borderpane {
                 center {
                     minWidth = 400.0
@@ -144,10 +155,13 @@ class Editor : View("User Editor") {
                                 }
                             }
 
+
+                            /** Feld mit den Einstellungen für den Speicherort */
                             field("Pfad") {
                                 textfield {
                                     scanProfileScanPathField = this
                                 }
+                                /** DirectoryChooser für Auswahl des Speicherorts */
                                 button("Wählen") {
                                     action {
                                         chooseDirectory {
@@ -155,7 +169,7 @@ class Editor : View("User Editor") {
                                             initialDirectory = File("/")
 
                                             setOnAction { e ->
-                                                var selectedDirectory = directoryChooser.showDialog(primaryStage)
+                                                val selectedDirectory = directoryChooser.showDialog(primaryStage)
                                                 scanProfileScanPathField.text = selectedDirectory.absolutePath
                                             }
                                         }
@@ -171,6 +185,7 @@ class Editor : View("User Editor") {
                                 }
                             }
 
+                            /** Feld mit den Auswahl ob Icon für Button benutzt werden soll */
                             field("Mit Icon?") {
                                 checkbox("", iconCheckboxProperty) {
                                     scanProfileImgCheckbox = this
@@ -188,6 +203,7 @@ class Editor : View("User Editor") {
                                 }
                             }
 
+                            /** Combobox zur Auswahl welches Icon verwendet werden soll */
                             fieldset {
                                 field("Auswahl") {
                                     combobox<String> {
@@ -196,9 +212,9 @@ class Editor : View("User Editor") {
                                     }
                                     scanProfileImgCombobox.setOnAction {
 
-                                        var iconPath =
+                                        val iconPath =
                                             mainController.getIconPath(scanProfileImgCombobox.value.toString())
-                                        var imageView = ImageView(Image("file:$iconPath"))
+                                        val imageView = ImageView(Image("file:$iconPath"))
                                         imageView.fitHeight = 70.0
                                         imageView.fitWidth = 70.0
                                         iconButton.graphic = imageView
@@ -212,12 +228,8 @@ class Editor : View("User Editor") {
                             }
                         }.hide()
 
-                        val button = Button("Select Directory")
-                        button.setOnAction { e ->
-                            val selectedDirectory = directoryChooser.showDialog(primaryStage)
-                            println(selectedDirectory.absolutePath)
-                        }
 
+                        /** Button zum speichern der veränderten Daten */
                         bottom {
                             hbox {
                                 button("Speichern").action {
@@ -232,7 +244,10 @@ class Editor : View("User Editor") {
         }
     }
 
-
+    /**
+     * Funktion um ausgewählten User zu löschen
+     *
+     */
     private fun deleteUser() {
         val deletedUser = userTable.selectedItem!!
 
@@ -246,6 +261,10 @@ class Editor : View("User Editor") {
         mainView.refreshUserbuttons()
     }
 
+    /**
+     * Funktion um ausgewähltes Scan Profil zu löschen
+     *
+     */
     private fun deleteScanButton() {
         val deletedScanButton = scanProfileTable.selectedItem!!
 
@@ -264,8 +283,12 @@ class Editor : View("User Editor") {
         prevSelectionScanProfile = null
     }
 
+    /**
+     * Funktion um neues User zu erstellen
+     *
+     */
     private fun newUser() {
-        var newUser = UserModel()
+        val newUser = UserModel()
         newUser.username = "Neu"
         newUser.id = userController.userList.last().id + 1
         userController.userList.add(newUser)
@@ -273,33 +296,50 @@ class Editor : View("User Editor") {
         mainView.refreshUserbuttons()
     }
 
-    private fun newScanButton() {
-        val user = userTable.selectedItem!!
-        var button = ScanProfileModel()
+    /**
+     * Funktion um neues ScanProfl zu erstellen
+     *
+     */
+    private fun newScanProfile() {
+        val button = ScanProfileModel()
         if (scanButtonList.isEmpty())
             button.id = 1
         else
             button.id = scanButtonList.last().id + 1
         button.napsProfile = "Neu"
         button.title = "Neu"
-        button.buttonNumber = "-1"
+        button.buttonNumber = "0"
         button.imgFilename = ""
         scanButtonList.add(button)
 
     }
 
+    /**
+     * Setzt alle Textfelder usw. auf das zu editierende UserModel
+     *
+     * @param user Das zu editierende UserModel
+     */
     private fun editUser(user: UserModel?) {
-
+        //Zuerst die Felder von dem zuvor gewählten User lösen
         if (user != null) {
             prevSelectionUser?.apply {
                 usernameProperty.unbindBidirectional(nameField.textProperty())
             }
+            // Textfelder mit ausgewählten User verbinden
             nameField.bind(user.usernameProperty)
+            // User merken
             prevSelectionUser = user
         }
     }
 
+    /**
+     * Setzt alle Textfelder usw. auf das zu editierende ScanProfile
+     *
+     * @param scanProfile Das zu editierende Profil
+     */
     private fun editScanButton(scanProfile: ScanProfileModel?) {
+
+        //Zuerst die Felder von dem zuvor gewählten Scanprofil lösen
         if (scanProfile != null) {
             prevSelectionScanProfile?.apply {
                 titleProperty.unbindBidirectional(scanProfileTitleField.textProperty())
@@ -310,7 +350,7 @@ class Editor : View("User Editor") {
             }
 
 
-
+            // Textfelder mit ausgewählten ScanProfil verbinden
             scanProfileTitleField.bind(scanProfile.titleProperty)
             scanProfileCommandField.bind(scanProfile.naspProfileProperty)
             scanProfileNumberField.bind(scanProfile.buttonNumberProperty)
@@ -318,12 +358,17 @@ class Editor : View("User Editor") {
             scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
             scanProfileScanPathField.bind(scanProfile.scanPathProperty)
 
+            // Scanprofil merken
             prevSelectionScanProfile = scanProfile
         }
     }
 
+    /**
+     * Speichert die User mit allen Änderungen
+     *
+     */
     private fun saveUser() {
-        // Extract the selected person from the tableView
+        // Ausgewählten user aus der tableView holen
         val editedUser = userTable.selectedItem!!
 
         for (it in userController.userList) {
@@ -336,11 +381,4 @@ class Editor : View("User Editor") {
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
         mainView.refreshUserbuttons()
     }
-
-    private fun clearScanButtonEdit() {
-        scanProfileTitleField.clear()
-        scanProfileNumberField.clear()
-        scanProfileCommandField.clear()
-    }
-
 }
