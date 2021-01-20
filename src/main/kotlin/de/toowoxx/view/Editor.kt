@@ -296,8 +296,17 @@ class Editor : View("User Editor") {
      */
     private fun newUser() {
         val newUser = UserModel()
+
+        // Neue (noch nicht benutzte) ID suchen
+        var usedId = 0
+        for (user in userController.userList) {
+            if (usedId < user.id)
+                usedId = user.id
+        }
+
+        newUser.id = usedId + 1
         newUser.username = "Neu"
-        newUser.id = userController.userList.last().id + 1
+
         userController.userList.add(newUser)
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
         mainView.refreshUserbuttons()
@@ -308,15 +317,24 @@ class Editor : View("User Editor") {
      *
      */
     private fun newScanProfile() {
-        val button = ScanProfileModel()
+        val profile = ScanProfileModel()
         if (scanProfileList.isEmpty())
-            button.id = 1
-        else
-            button.id = scanProfileList.last().id + 1
-        button.napsProfile = "Neu"
-        button.title = "Neu"
-        button.imgFilename = ""
-        scanProfileList.add(button)
+            profile.id = 1
+        else {
+            // Neue (noch nicht benutzte) ID suchen
+            var usedId = 0
+            for (scanProfileModel in scanProfileList) {
+                if (usedId < scanProfileModel.id)
+                    usedId = scanProfileModel.id
+            }
+            profile.id = usedId + 1
+        }
+        profile.title = "Neu"
+        profile.imgFilename = ""
+        profile.scanPath = ""
+        profile.scanFormat = ""
+        profile.napsProfile = ""
+        scanProfileList.add(profile)
 
     }
 
