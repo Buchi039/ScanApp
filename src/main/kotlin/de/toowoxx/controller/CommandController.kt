@@ -8,27 +8,42 @@ import java.time.format.DateTimeFormatter
 
 class CommandController : Controller() {
 
+    /**
+     * Führt den Scan aus mit dem Profil aus dem ScanProfileModel
+     *
+     * @param model Das Model mit den hinterlegten Scan-Einstellungen
+     */
+    fun runScanCmd(model: ScanProfileModel) {
 
-    fun runCmd(model: ScanProfileModel) {
+        val dateTimeFormatter = DateTimeFormatter
+            .ofPattern("yyyyMMdd_HHmmss")
+            .withZone(ZoneOffset.UTC)
+            .format(Instant.now())
+        val filename = dateTimeFormatter.toString()
 
-        if (false) {
-            var dateTimeFormatter = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd-HH:mm:ss.SSSSSS")
-                .withZone(ZoneOffset.UTC)
-                .format(Instant.now())
-            var filename = dateTimeFormatter.toString()
+        val napsPath = "C:\\Program Files (x86)\\NAPS2\\"
 
-            var cmd = buildNapsCmd(model.scanPath, "test1", model.napsProfile)
-            println("Command: $cmd")
-            Runtime.getRuntime().exec(cmd)
-        } else {
-            Runtime.getRuntime().exec("/usr/bin/open -a " + "Keka")
-        }
+        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
+        println("Command: $cmd")
+        Runtime.getRuntime().exec(cmd)
+
     }
 
+    fun runCmd() {
+        Runtime.getRuntime().exec("/usr/bin/open -a " + "Keka")
+    }
 
-    fun buildNapsCmd(scanPath: String, filename: String, profileName: String): String {
+    /**
+     * Erstellt den CMD-Befehl
+     *
+     * @param napsPath Der Pfad zu der NAPS2.Console.exe
+     * @param scanPath Der Pfad wo der Scan gespeichert werden soll
+     * @param filename Der Name des Scans
+     * @param profileName Der Name des NAPS2 Profil, welches für den Scan verwendet werden soll
+     * @return Der ausführbare CMD String
+     */
+    private fun buildNapsCmd(napsPath: String, scanPath: String, filename: String, profileName: String): String {
 
-        return "NAPS2.Console.exe -o ${scanPath + "\\" + filename}.pdf -p profile1"
+        return "$napsPath\\NAPS2.Console.exe -o ${scanPath + "\\" + filename}.pdf -p $profileName"
     }
 }
