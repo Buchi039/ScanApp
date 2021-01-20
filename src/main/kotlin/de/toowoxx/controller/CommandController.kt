@@ -29,6 +29,7 @@ class CommandController : Controller() {
         val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
 
         val napsPath = ConfigReader().readConfig("napsPath")
+        val napCMD = "$napsPath\\App"
 
         val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")

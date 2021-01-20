@@ -1,5 +1,6 @@
 package de.toowoxx.view
 
+import ConfigReader
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanProfileModel
@@ -31,6 +32,7 @@ class Editor : View("User Editor") {
     var scanProfileImgCheckbox: CheckBox by singleAssign()
     var scanProfileImgCombobox: ComboBox<String> by singleAssign()
     var scanProfileScanPathField: TextField by singleAssign()
+    var scanProfileNAPSProfilesCombobox: ComboBox<String> by singleAssign()
     var scanProfileFormatCombobox: ComboBox<String> by singleAssign()
 
     var scanButtonFieldset = fieldset()
@@ -148,8 +150,11 @@ class Editor : View("User Editor") {
                                 }
                             }
                             field("Scan Profile") {
-                                textfield() {
-                                    scanProfileCommandField = this
+                                combobox<String> {
+                                    scanProfileNAPSProfilesCombobox = this
+                                    items = ConfigReader().readNAPSProfiles().asObservable()
+                                    minWidth = 190.0
+                                    maxWidth = minWidth
                                 }
 
                                 combobox<String> {
@@ -348,22 +353,25 @@ class Editor : View("User Editor") {
         if (scanProfile != null) {
             prevSelectionScanProfile?.apply {
                 titleProperty.unbindBidirectional(scanProfileTitleField.textProperty())
-                napsProfileProperty.unbindBidirectional(scanProfileCommandField.textProperty())
                 buttonNumberProperty.unbindBidirectional(scanProfileNumberField.textProperty())
-                imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
                 scanPathProperty.unbindBidirectional(scanProfileScanPathField.textProperty())
+
                 scanFormatProperty.unbindBidirectional(scanProfileFormatCombobox.valueProperty())
+                napsProfileProperty.unbindBidirectional(scanProfileNAPSProfilesCombobox.valueProperty())
+                imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
             }
 
 
             // Textfelder mit ausgewählten ScanProfil verbinden
             scanProfileTitleField.bind(scanProfile.titleProperty)
-            scanProfileCommandField.bind(scanProfile.napsProfileProperty)
             scanProfileNumberField.bind(scanProfile.buttonNumberProperty)
-            scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
-            scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
             scanProfileScanPathField.bind(scanProfile.scanPathProperty)
+
+            scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
+
             scanProfileFormatCombobox.bind(scanProfile.scanFormatProperty)
+            scanProfileNAPSProfilesCombobox.bind(scanProfile.napsProfileProperty)
+            scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
 
             // Scanprofil merken
             prevSelectionScanProfile = scanProfile

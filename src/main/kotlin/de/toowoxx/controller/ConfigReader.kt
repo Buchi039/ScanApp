@@ -1,3 +1,6 @@
+import org.json.JSONObject
+import org.json.XML
+import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
@@ -23,5 +26,22 @@ class ConfigReader {
             ex.printStackTrace()
             return ""
         }
+    }
+
+
+    fun readNAPSProfiles(): List<String> {
+
+        val napsPath = readConfig("napsPath")
+
+        val xmlFile = "$napsPath/Data/profiles.xml"
+        val xmlStr = File(xmlFile).readText()
+        val jsonObj = XML.toJSONObject(xmlStr)
+
+        var arrayOfScanProfile = jsonObj.getJSONObject("ArrayOfScanProfile").getJSONArray("ScanProfile")
+        val displayNames = mutableListOf<String>()
+        arrayOfScanProfile.forEach { profile ->
+            displayNames.add(JSONObject(profile.toString()).getString("DisplayName"))
+        }
+        return displayNames
     }
 }

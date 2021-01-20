@@ -7,6 +7,7 @@ import java.io.File
 
 
 fun main() {
+    ConfigReader().readNAPSProfiles()
 
     if (!File(ConfigReader().readConfig("userConfigPath")).exists())
         UserController().saveUsersToJson(UserController().generateDummyUsers())
