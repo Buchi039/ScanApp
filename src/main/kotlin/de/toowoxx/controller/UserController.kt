@@ -50,9 +50,10 @@ class UserController : Controller() {
 
     fun generateDummyUsers(): MutableList<UserModelJson> {
 
-        val button1 = ScanProfileJson(1, "Keka", 1, "Keka", "save.png", "scans/")
-        val button2 = ScanProfileJson(2, "Terminal", 2, "Terminal", "", "scans/")
-        val button3 = ScanProfileJson(3, "CotEditor", 3, "CotEditor", "testicon.png", "scans/")
+        val button1 = ScanProfileJson(1, "Keka", 1, "Keka", "save.png", System.getProperty("user.home"), "pdf")
+        val button2 = ScanProfileJson(2, "Terminal", 2, "Terminal", "", System.getProperty("user.home"), "pdf")
+        val button3 =
+            ScanProfileJson(3, "CotEditor", 3, "CotEditor", "testicon.png", System.getProperty("user.home"), "pdf")
 
 
         var buttonList = mutableListOf(button1, button2, button3)

@@ -6,7 +6,7 @@ import tornadofx.Controller
 import java.io.File
 
 class MainController : Controller() {
-    
+
     /**
      * Öffnet die View mit der Übersicht aller Scan Buttons
      *
@@ -39,6 +39,10 @@ class MainController : Controller() {
      */
     fun getIconPath(iconName: String): String {
         return ConfigReader().readConfig("iconPath") + iconName
+    }
+
+    fun getAvailableFormats(): List<String> {
+        return listOf<String>("pdf", "jpg", "png", "exif", "tif")
     }
 
 }

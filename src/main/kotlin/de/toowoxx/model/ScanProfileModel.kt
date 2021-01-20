@@ -10,8 +10,8 @@ class ScanProfileModel() : JsonModel {
     val idProperty = SimpleIntegerProperty()
     var id by idProperty
 
-    val naspProfileProperty = SimpleStringProperty()
-    var napsProfile by naspProfileProperty
+    val napsProfileProperty = SimpleStringProperty()
+    var napsProfile by napsProfileProperty
 
     val buttonNumberProperty = SimpleStringProperty()
     var buttonNumber by buttonNumberProperty
@@ -25,6 +25,9 @@ class ScanProfileModel() : JsonModel {
     var scanPathProperty = SimpleStringProperty()
     var scanPath by scanPathProperty
 
+    val scanFormatProperty = SimpleStringProperty()
+    var scanFormat by scanFormatProperty
+
 
     override fun updateModel(json: JsonObject) {
         with(json) {
@@ -34,6 +37,7 @@ class ScanProfileModel() : JsonModel {
             title = string("title")
             imgFilename = string("imgFilename")
             scanPath = string("scanPath")
+            scanFormat = string("stringFormat")
         }
     }
 
@@ -45,11 +49,13 @@ class ScanProfileModel() : JsonModel {
             add("title", title)
             add("imgFilename", imgFilename)
             add("scanPath", scanPath)
+            add("scanFormat", scanFormat)
         }
     }
 
     fun toScanProfileJson(): ScanProfileJson {
-        var buttonDataJson = ScanProfileJson(id, napsProfile, buttonNumber.toInt(), title, imgFilename, scanPath)
+        var buttonDataJson =
+            ScanProfileJson(id, napsProfile, buttonNumber.toInt(), title, imgFilename, scanPath, scanFormat)
         return buttonDataJson
     }
 }
@@ -61,18 +67,20 @@ data class ScanProfileJson(
     val buttonNumber: Int,
     val title: String,
     val imgPath: String,
-    val scanPath: String
+    val scanPath: String,
+    val scanFormat: String
 ) {
 
     fun toScanProfileData(): ScanProfileModel {
-        var btn = ScanProfileModel()
-        btn.id = id
-        btn.napsProfile = command
-        btn.buttonNumber = buttonNumber.toString()
-        btn.title = title
-        btn.imgFilename = imgPath
-        btn.scanPath = scanPath
-        return btn
+        var profile = ScanProfileModel()
+        profile.id = id
+        profile.napsProfile = command
+        profile.buttonNumber = buttonNumber.toString()
+        profile.title = title
+        profile.imgFilename = imgPath
+        profile.scanPath = scanPath
+        profile.scanFormat = scanFormat
+        return profile
     }
 
 }

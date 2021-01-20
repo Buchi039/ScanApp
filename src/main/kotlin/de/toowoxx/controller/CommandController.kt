@@ -30,7 +30,7 @@ class CommandController : Controller() {
 
         val napsPath = ConfigReader().readConfig("napsPath")
 
-        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
+        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile, model.scanFormat)
         println("Command: $cmd")
         Runtime.getRuntime().exec(cmd)
 
@@ -49,8 +49,14 @@ class CommandController : Controller() {
      * @param profileName Der Name des NAPS2 Profil, welches für den Scan verwendet werden soll
      * @return Der ausführbare CMD String
      */
-    private fun buildNapsCmd(napsPath: String, scanPath: String, filename: String, profileName: String): String {
+    private fun buildNapsCmd(
+        napsPath: String,
+        scanPath: String,
+        filename: String,
+        profileName: String,
+        format: String
+    ): String {
 
-        return "$napsPath\\NAPS2.Console.exe -o ${scanPath + "\\" + filename}.pdf -p $profileName"
+        return "$napsPath\\NAPS2.Console.exe -o ${scanPath + "\\" + filename}.$format -p $profileName"
     }
 }

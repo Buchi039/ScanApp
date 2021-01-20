@@ -68,7 +68,7 @@ class MainView : View() {
      * @param userList
      * @return
      */
-    fun generateUserButtons(userList: List<String>): List<Button> {
+    private fun generateUserButtons(userList: List<String>): List<Button> {
         val buttonList = mutableListOf<Button>()
         for ((buttonCount, user) in userList.withIndex()) {
             val button = button(user) {
@@ -95,7 +95,7 @@ class MainView : View() {
      * @param userList
      * @return
      */
-    fun genUserButtonsGridpane(userList: List<String>): GridPane {
+    private fun genUserButtonsGridpane(userList: List<String>): GridPane {
         val buttons = generateUserButtons(userList)
         val gridPane = GridPane()
 
