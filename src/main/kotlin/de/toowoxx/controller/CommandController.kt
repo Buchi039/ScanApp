@@ -1,5 +1,6 @@
 package de.toowoxx.controller
 
+import ConfigReader
 import de.toowoxx.model.ScanProfileModel
 import tornadofx.Controller
 import java.time.Instant
@@ -20,8 +21,8 @@ class CommandController : Controller() {
             .withZone(ZoneOffset.UTC)
             .format(Instant.now())
         val filename = dateTimeFormatter.toString()
-
-        val napsPath = "C:\\Program Files (x86)\\NAPS2\\"
+        
+        val napsPath = ConfigReader().readConfig("napsPath")
 
         val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")

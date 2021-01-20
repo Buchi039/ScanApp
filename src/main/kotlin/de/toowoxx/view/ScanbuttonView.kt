@@ -12,23 +12,31 @@ import javafx.scene.layout.GridPane
 import tornadofx.*
 
 class ScanbuttonView(username: String) : View() {
-    val mainController: MainController by inject()
 
-    val userController: UserController by inject()
-    val cmdController: CommandController by inject()
-    var buttonGridpane: GridPane = gridpane()
+    private val mainController: MainController by inject()
+    private val userController: UserController by inject()
+    private val cmdController: CommandController by inject()
 
 
+    private var buttonGridpane: GridPane = gridpane()
     override var root: Parent = borderpane {}
 
+    /**
+     * Erstellt die View des Users
+     */
     init {
         buttonGridpane = genScanButtonGridpane(username)
         root = buttonGridpane
     }
 
-
+    /**
+     * Generiert ein TornadoFX Gridpane mit allen Scan Buttons für User
+     *
+     * @param username Name des Users
+     * @return GridPane mit allen Buttons des Users
+     */
     private fun genScanButtonGridpane(username: String?): GridPane {
-        var buttonGrid = gridpane()
+        val buttonGrid = gridpane()
         val user = userController.getUserByUsername(username)
 
         if (user != null) {
@@ -39,8 +47,13 @@ class ScanbuttonView(username: String) : View() {
         return buttonGrid
     }
 
-
-    fun genScanButton(scanProfileModel: ScanProfileModel): Button {
+    /**
+     * Generiert den Button aus dem Model
+     *
+     * @param scanProfileModel
+     * @return  Generierter Button
+     */
+    private fun genScanButton(scanProfileModel: ScanProfileModel): Button {
 
         val button = button(scanProfileModel.title) {
             minHeight = 100.0
@@ -50,9 +63,7 @@ class ScanbuttonView(username: String) : View() {
             maxWidth = 100.0
 
             action {
-                println("Run Command: " + scanProfileModel.napsProfile)
-                //cmdController.runCmd(scanProfileModel.napsProfile)
-                cmdController.runCmd(scanProfileModel)
+                cmdController.runScanCmd(scanProfileModel)
             }
         }.gridpaneConstraints {
             columnRowIndex(scanProfileModel.buttonNumber.toInt(), 0)
@@ -61,15 +72,15 @@ class ScanbuttonView(username: String) : View() {
             fillHeight = true
         }
 
+        /** Wenn das Sconprofile ein Image hinterlegt hat wird ein Icon auf den Button gelegt */
         if (scanProfileModel.imgFilename != "") {
-            var iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
-            var img = Image("file:$iconPath")
-            var imgView = ImageView(img)
+            val iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
+            val img = Image("file:$iconPath")
+            val imgView = ImageView(img)
             imgView.fitHeight = 70.0
             imgView.fitWidth = 70.0
             button.graphic = imgView
             button.text = ""
-
         }
         return button
     }

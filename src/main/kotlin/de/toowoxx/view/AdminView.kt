@@ -12,32 +12,34 @@ import tornadofx.*
 class AdminView : View("Adminpanel") {
 
     val loginController: LoginController by inject()
-    val mainView: MainView by inject()
 
 
-    private val model = object : ViewModel() {
+    private val logindata = object : ViewModel() {
         val username = bind { SimpleStringProperty() }
         val password = bind { SimpleStringProperty() }
     }
 
+    //Login Fentser erstellen
     override var root = form {
         addClass(adminView)
         fieldset {
             field("Username") {
-                textfield(model.username) {
+                textfield(logindata.username) {
                     required()
                     whenDocked { requestFocus() }
                 }
             }
             field("Password") {
-                passwordfield(model.password).required()
+                passwordfield(logindata.password) {
+                    required()
+                }
             }
             button("Login") {
                 isDefaultButton = true
 
-                action {
-                    model.commit {
-                        loginController.tryLogin(model.username.value, model.password.value)
+                action {    // Bei Button Click versuch mit Daten aus logindata einzuloggen
+                    logindata.commit {
+                        loginController.tryLogin(logindata.username.value, logindata.password.value)
                     }
                 }
             }
@@ -46,10 +48,11 @@ class AdminView : View("Adminpanel") {
 
 
     override fun onDock() {
-        model.validate(decorateErrors = false)
+        logindata.validate(decorateErrors = false)
     }
 
 
+    // Funktion für Schütteleffekt des Fensters, wenn Login falsch
     fun shakeStage() {
         var x = 0
         var y = 0
@@ -89,8 +92,9 @@ class AdminView : View("Adminpanel") {
         timelineY.play()
     }
 
+    // Username und Password Feld zurücksetzen
     fun clearLogin() {
-        model.username.value = ""
-        model.password.value = ""
+        logindata.username.value = ""
+        logindata.password.value = ""
     }
 }

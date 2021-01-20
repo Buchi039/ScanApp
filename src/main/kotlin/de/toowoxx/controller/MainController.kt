@@ -1,13 +1,12 @@
 package de.toowoxx.controller
 
+import ConfigReader
 import de.toowoxx.view.ScanbuttonView
 import tornadofx.Controller
 import java.io.File
 
 class MainController : Controller() {
-
-    val iconDir = "img/"
-
+    
     /**
      * Öffnet die View mit der Übersicht aller Scan Buttons
      *
@@ -23,8 +22,9 @@ class MainController : Controller() {
      * @return Liste mit Icon Namen
      */
     fun getAvailableIconNames(): ArrayList<String> {
-        var iconNameList = arrayListOf<String>()
-        File("img/").walkBottomUp().forEach {
+        val iconNameList = arrayListOf<String>()
+        val iconPath = ConfigReader().readConfig("iconPath")
+        File(iconPath).walkBottomUp().forEach {
             if (it.isFile)
                 iconNameList.add(it.name)
         }
@@ -38,7 +38,7 @@ class MainController : Controller() {
      * @return  Pfad zu dem File (iconName)
      */
     fun getIconPath(iconName: String): String {
-        return iconDir + iconName
+        return ConfigReader().readConfig("iconPath") + iconName
     }
 
 }
