@@ -1,5 +1,6 @@
 package de.toowoxx.controller
 
+import ConfigReader
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import de.toowoxx.model.ScanProfileJson
@@ -14,7 +15,7 @@ import java.io.File
 
 class UserController : Controller() {
 
-    private val path = "users.json"
+    private val path = ConfigReader().readConfig("userConfigPath")
     var userList = observableListOf<UserModel>()
 
     fun saveUsersToJson(users: MutableList<UserModelJson>) {

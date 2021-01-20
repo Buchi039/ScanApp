@@ -4,11 +4,16 @@ import java.util.*
 
 class ConfigReader {
 
-    fun readConfig(searchElement: String):String{
+    /**
+     * Liest Wert aus config.properties
+     *
+     * @param searchElement Bezeichnung des Werts
+     * @return Der gesuchte Wert
+     */
+    fun readConfig(searchElement: String): String {
 
         try {
-
-            FileInputStream("config.properties").use { input ->
+            FileInputStream("config/config.properties").use { input ->
                 val prop = Properties()
                 prop.load(input)
                 val value = String(prop.getProperty(searchElement).toByteArray(charset("windows-1252")))

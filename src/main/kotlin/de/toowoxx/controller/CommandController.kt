@@ -16,12 +16,18 @@ class CommandController : Controller() {
      */
     fun runScanCmd(model: ScanProfileModel) {
 
+        /** TODO löschen */
+        if (System.getProperty("os.name") == "Mac OS X") {
+            runTestCmd()
+            return
+        }
+
         val dateTimeFormatter = DateTimeFormatter
             .ofPattern("yyyyMMdd_HHmmss")
             .withZone(ZoneOffset.UTC)
             .format(Instant.now())
         val filename = dateTimeFormatter.toString()
-        
+
         val napsPath = ConfigReader().readConfig("napsPath")
 
         val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
@@ -30,7 +36,7 @@ class CommandController : Controller() {
 
     }
 
-    fun runCmd() {
+    fun runTestCmd() {
         Runtime.getRuntime().exec("/usr/bin/open -a " + "Keka")
     }
 
