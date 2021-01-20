@@ -1,24 +1,27 @@
 package de.toowoxx.controller
 
-import de.toowoxx.view.AdminView
 import de.toowoxx.view.ScanbuttonView
 import tornadofx.Controller
 import java.io.File
 
 class MainController : Controller() {
-    val adminView: AdminView by inject()
 
     val iconDir = "img/"
 
-    fun buttonClicked(text: String = "Button pressed") {
-        println(text)
-    }
-
+    /**
+     * Öffnet die View mit der Übersicht aller Scan Buttons
+     *
+     * @param username
+     */
     fun showScanbuttonView(username: String) {
         ScanbuttonView(username).openWindow()
     }
 
-
+    /**
+     * Gibt eine Liste mit allen verfügbaren Icons für die Buttons zurück
+     *
+     * @return Liste mit Icon Namen
+     */
     fun getAvailableIconNames(): ArrayList<String> {
         var iconNameList = arrayListOf<String>()
         File("img/").walkBottomUp().forEach {
@@ -28,6 +31,12 @@ class MainController : Controller() {
         return iconNameList
     }
 
+    /**
+     * Gibt den Pfad zu dem Icon-File zurück
+     *
+     * @param iconName
+     * @return  Pfad zu dem File (iconName)
+     */
     fun getIconPath(iconName: String): String {
         return iconDir + iconName
     }
