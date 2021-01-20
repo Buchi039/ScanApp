@@ -16,24 +16,22 @@ import java.io.File
 
 
 class Editor : View("User Editor") {
-    val mainController: MainController by inject()
     val mainView: MainView by inject()
+
+    val mainController: MainController by inject()
     val userController: UserController by inject()
 
+    var usernameField: TextField by singleAssign()
 
-    var nameField: TextField by singleAssign()
-
-    var scanButtonList = observableListOf<ScanProfileModel>()
+    var scanProfileList = observableListOf<ScanProfileModel>()
     var scanProfileTable: TableView<ScanProfileModel> by singleAssign()
 
     var scanProfileTitleField: TextField by singleAssign()
-    var scanProfileCommandField: TextField by singleAssign()
-    var scanProfileNumberField: TextField by singleAssign()
     var scanProfileImgCheckbox: CheckBox by singleAssign()
     var scanProfileImgCombobox: ComboBox<String> by singleAssign()
     var scanProfileScanPathField: TextField by singleAssign()
-    var scanProfileNAPSProfilesCombobox: ComboBox<String> by singleAssign()
-    var scanProfileFormatCombobox: ComboBox<String> by singleAssign()
+    var scanProfileNAPSCombo: ComboBox<String> by singleAssign()
+    var scanProfileFormatCombo: ComboBox<String> by singleAssign()
 
     var scanButtonFieldset = fieldset()
 
@@ -41,7 +39,6 @@ class Editor : View("User Editor") {
 
     var prevSelectionUser: UserModel? = null
     var prevSelectionScanProfile: ScanProfileModel? = null
-
 
     var iconButton: Button by singleAssign()
     var iconField: Field by singleAssign()
@@ -64,12 +61,14 @@ class Editor : View("User Editor") {
                 center {
                     tableview(userController.userList) {
                         userTable = this
-                        column("User", UserModel::usernameProperty)
+                        column("User", UserModel::usernameProperty) {
+                            prefWidthProperty().bind(userTable.widthProperty())
+                        }
                         // Edit the currently selected User
                         selectionModel.selectedItemProperty().onChange {
                             editUser(it)
                             if (it != null)
-                                scanButtonList.setAll(it.userButtons)
+                                scanProfileList.setAll(it.userButtons)
                             scanButtonFieldset.hide()
                         }
                     }
@@ -87,6 +86,7 @@ class Editor : View("User Editor") {
                         paddingAll = 15
                     }
                 }
+
             }
 
             /** Spalte 2 mit Auswahl des Scanprofils von User
@@ -96,12 +96,15 @@ class Editor : View("User Editor") {
              * */
             borderpane {
                 center {
-                    tableview(scanButtonList) {
+                    tableview(scanProfileList) {
                         scanProfileTable = this
-                        column("Titel", ScanProfileModel::titleProperty)
-                        column("NAPS Profile", ScanProfileModel::napsProfileProperty)
-                        column("Nummer", ScanProfileModel::buttonNumber)
+                        column("Titel", ScanProfileModel::titleProperty) {
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
 
+                        }
+                        column("NAPS", ScanProfileModel::napsProfileProperty) {
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             editScanButton(it)
@@ -138,7 +141,7 @@ class Editor : View("User Editor") {
                         fieldset("User bearbeiten") {
                             field("Name") {
                                 textfield {
-                                    nameField = this
+                                    usernameField = this
                                 }
                             }
                         }
@@ -149,19 +152,18 @@ class Editor : View("User Editor") {
                                     scanProfileTitleField = this
                                 }
                             }
-                            field("Scan Profile") {
+                            field("NAPS Profile") {
                                 combobox<String> {
-                                    scanProfileNAPSProfilesCombobox = this
+                                    scanProfileNAPSCombo = this
                                     items = ConfigReader().readNAPSProfiles().asObservable()
-                                    minWidth = 190.0
-                                    maxWidth = minWidth
+                                    prefWidth = 190.0
+
                                 }
 
                                 combobox<String> {
-                                    scanProfileFormatCombobox = this
+                                    scanProfileFormatCombo = this
                                     items = mainController.getAvailableFormats().asObservable()
-                                    minWidth = 70.0
-                                    maxWidth = 70.0
+                                    prefWidth = 70.0
 
                                 }
                             }
@@ -171,6 +173,7 @@ class Editor : View("User Editor") {
                             field("Pfad") {
                                 textfield {
                                     scanProfileScanPathField = this
+                                    prefWidthProperty().bind(scanProfileNAPSCombo.widthProperty())
                                 }
                                 /** DirectoryChooser für Auswahl des Speicherorts */
                                 button("Wählen") {
@@ -185,18 +188,10 @@ class Editor : View("User Editor") {
                                             }
                                         }
                                     }
-                                    minWidth = 70.0
-                                    maxWidth = 70.0
-                                    alignment = Pos.BASELINE_RIGHT
+                                    prefWidthProperty().bind(scanProfileFormatCombo.widthProperty())
                                 }
                             }
 
-
-                            field("Button Nr.") {
-                                textfield {
-                                    scanProfileNumberField = this
-                                }
-                            }
 
                             /** Feld mit den Auswahl ob Icon für Button benutzt werden soll */
                             field("Mit Icon?") {
@@ -220,6 +215,7 @@ class Editor : View("User Editor") {
                                     combobox<String> {
                                         scanProfileImgCombobox = this
                                         items = mainController.getAvailableIconNames().asObservable()
+                                        prefWidthProperty().bind(scanProfileNAPSCombo.widthProperty())
                                     }
                                     scanProfileImgCombobox.setOnAction {
 
@@ -233,12 +229,13 @@ class Editor : View("User Editor") {
                                 }
 
                                 iconField = field("Vorschau") {
-                                    iconButton = button { }
+                                    iconButton = button {
+                                        alignment = Pos.BOTTOM_LEFT
+                                    }
                                 }
                                 hiddenWhen(!iconCheckboxProperty)
                             }
                         }.hide()
-
 
                         /** Button zum speichern der veränderten Daten */
                         bottom {
@@ -279,16 +276,16 @@ class Editor : View("User Editor") {
     private fun deleteScanButton() {
         val deletedScanButton = scanProfileTable.selectedItem!!
 
-        for (button in scanButtonList) {
+        for (button in scanProfileList) {
             if (button.id == deletedScanButton.id) {
-                scanButtonList.remove(deletedScanButton)
+                scanProfileList.remove(deletedScanButton)
                 break
             }
         }
 
         val selectedUser = userTable.selectedItem!!
         selectedUser.userButtons = observableListOf()
-        selectedUser.userButtons.addAll(scanButtonList)
+        selectedUser.userButtons.addAll(scanProfileList)
 
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
         prevSelectionScanProfile = null
@@ -312,15 +309,14 @@ class Editor : View("User Editor") {
      */
     private fun newScanProfile() {
         val button = ScanProfileModel()
-        if (scanButtonList.isEmpty())
+        if (scanProfileList.isEmpty())
             button.id = 1
         else
-            button.id = scanButtonList.last().id + 1
+            button.id = scanProfileList.last().id + 1
         button.napsProfile = "Neu"
         button.title = "Neu"
-        button.buttonNumber = "0"
         button.imgFilename = ""
-        scanButtonList.add(button)
+        scanProfileList.add(button)
 
     }
 
@@ -333,10 +329,10 @@ class Editor : View("User Editor") {
         //Zuerst die Felder von dem zuvor gewählten User lösen
         if (user != null) {
             prevSelectionUser?.apply {
-                usernameProperty.unbindBidirectional(nameField.textProperty())
+                usernameProperty.unbindBidirectional(usernameField.textProperty())
             }
             // Textfelder mit ausgewählten User verbinden
-            nameField.bind(user.usernameProperty)
+            usernameField.bind(user.usernameProperty)
             // User merken
             prevSelectionUser = user
         }
@@ -353,24 +349,22 @@ class Editor : View("User Editor") {
         if (scanProfile != null) {
             prevSelectionScanProfile?.apply {
                 titleProperty.unbindBidirectional(scanProfileTitleField.textProperty())
-                buttonNumberProperty.unbindBidirectional(scanProfileNumberField.textProperty())
                 scanPathProperty.unbindBidirectional(scanProfileScanPathField.textProperty())
 
-                scanFormatProperty.unbindBidirectional(scanProfileFormatCombobox.valueProperty())
-                napsProfileProperty.unbindBidirectional(scanProfileNAPSProfilesCombobox.valueProperty())
+                scanFormatProperty.unbindBidirectional(scanProfileFormatCombo.valueProperty())
+                napsProfileProperty.unbindBidirectional(scanProfileNAPSCombo.valueProperty())
                 imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
             }
 
 
             // Textfelder mit ausgewählten ScanProfil verbinden
             scanProfileTitleField.bind(scanProfile.titleProperty)
-            scanProfileNumberField.bind(scanProfile.buttonNumberProperty)
             scanProfileScanPathField.bind(scanProfile.scanPathProperty)
 
             scanProfileImgCheckbox.bind((scanProfile.imgFilename != "").toProperty())
 
-            scanProfileFormatCombobox.bind(scanProfile.scanFormatProperty)
-            scanProfileNAPSProfilesCombobox.bind(scanProfile.napsProfileProperty)
+            scanProfileFormatCombo.bind(scanProfile.scanFormatProperty)
+            scanProfileNAPSCombo.bind(scanProfile.napsProfileProperty)
             scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
 
             // Scanprofil merken
@@ -388,7 +382,7 @@ class Editor : View("User Editor") {
 
         for (it in userController.userList) {
             if (it.id == editedUser.id) {
-                editedUser.userButtons.setAll(scanButtonList)
+                editedUser.userButtons.setAll(scanProfileList)
                 break
             }
         }

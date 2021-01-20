@@ -12,8 +12,8 @@ class MainController : Controller() {
      *
      * @param username
      */
-    fun showScanbuttonView(username: String) {
-        ScanbuttonView(username).openWindow()
+    fun showScanbuttonView(userid: Int) {
+        ScanbuttonView(userid).openWindow()
     }
 
     /**

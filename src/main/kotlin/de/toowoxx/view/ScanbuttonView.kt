@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import tornadofx.*
 
-class ScanbuttonView(username: String) : View() {
+class ScanbuttonView(userid: Int) : View() {
 
     private val mainController: MainController by inject()
     private val userController: UserController by inject()
@@ -25,7 +25,7 @@ class ScanbuttonView(username: String) : View() {
      * Erstellt die View des Users
      */
     init {
-        buttonGridpane = genScanButtonGridpane(username)
+        buttonGridpane = genScanButtonGridpane(userid)
         root = buttonGridpane
     }
 
@@ -35,13 +35,17 @@ class ScanbuttonView(username: String) : View() {
      * @param username Name des Users
      * @return GridPane mit allen Buttons des Users
      */
-    private fun genScanButtonGridpane(username: String?): GridPane {
+    private fun genScanButtonGridpane(userid: Int): GridPane {
         val buttonGrid = gridpane()
-        val user = userController.getUserByUsername(username)
+        //val user = userController.getUserByUsername(username)
+        val user = userController.getUserById(userid)
 
+        var rIndex = 0
+        var cIndex = 0
         if (user != null) {
             for (it in user.userButtons) {
-                buttonGrid.add(genScanButton(it))
+                buttonGrid.add(genScanButton(it), cIndex, rIndex)
+                cIndex++
             }
         }
         return buttonGrid
@@ -66,7 +70,6 @@ class ScanbuttonView(username: String) : View() {
                 cmdController.runScanCmd(scanProfileModel)
             }
         }.gridpaneConstraints {
-            columnRowIndex(scanProfileModel.buttonNumber.toInt(), 0)
             marginTopBottom(5.0)
             marginLeftRight(5.0)
             fillHeight = true

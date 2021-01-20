@@ -18,3 +18,4 @@ gradle-app.setting
 *.iml
 /users.json
 config/userconfig.json
+/NAPS/Portable/Data/recovery/

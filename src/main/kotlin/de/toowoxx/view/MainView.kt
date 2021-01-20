@@ -2,6 +2,8 @@ package de.toowoxx.view
 
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
+import de.toowoxx.model.UserModel
+import javafx.collections.ObservableList
 import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.layout.GridPane
@@ -43,7 +45,7 @@ class MainView : View() {
             }
         }
         // Gridpane mit den Userbuttons erstellen und der View hinzufügen
-        userbuttons = genUserButtonsGridpane(userController.getUsernames())
+        userbuttons = genUserButtonsGridpane(userController.userList)
         root.add(userbuttons)
     }
 
@@ -53,7 +55,7 @@ class MainView : View() {
      */
     fun refreshUserbuttons() {
         userbuttons.clear()
-        userbuttons.add(genUserButtonsGridpane(userController.getUsernames()))
+        userbuttons.add(genUserButtonsGridpane(userController.userList))
 
         userbuttons.autosize()
         root.autosize()
@@ -68,15 +70,15 @@ class MainView : View() {
      * @param userList
      * @return
      */
-    private fun generateUserButtons(userList: List<String>): List<Button> {
+    private fun generateUserButtons(userList: ObservableList<UserModel>): List<Button> {
         val buttonList = mutableListOf<Button>()
         for ((buttonCount, user) in userList.withIndex()) {
-            val button = button(user) {
+            val button = button(user.username) {
                 minWidth = 100.0
                 minHeight = 50.0
                 // Button um die Übersicht (mit allen Scan Profilen) zu öffnen
                 action {
-                    controller.showScanbuttonView(user)
+                    controller.showScanbuttonView(user.id)
                 }
             }.gridpaneConstraints {
                 columnRowIndex(buttonCount + 1, 0)
@@ -95,7 +97,7 @@ class MainView : View() {
      * @param userList
      * @return
      */
-    private fun genUserButtonsGridpane(userList: List<String>): GridPane {
+    private fun genUserButtonsGridpane(userList: ObservableList<UserModel>): GridPane {
         val buttons = generateUserButtons(userList)
         val gridPane = GridPane()
 
