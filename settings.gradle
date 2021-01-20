@@ -1,2 +1,9 @@
-rootProject.name = 'tornadofx-gradle-project'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+    }
+}
+
+rootProject.name = 'Kodak-Scan-App'
 
