@@ -4,7 +4,7 @@ import ConfigReader
 import de.toowoxx.model.ScanProfileModel
 import tornadofx.Controller
 import java.time.Instant
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class CommandController : Controller() {
@@ -23,14 +23,14 @@ class CommandController : Controller() {
         }
 
         val dateTimeFormatter = DateTimeFormatter
-            .ofPattern("yyyyMMdd_HHmmss")
-            .withZone(ZoneOffset.UTC)
+            .ofPattern("ddMMyy_HHmmss")
+            .withZone(ZoneId.systemDefault())
             .format(Instant.now())
-        val filename = dateTimeFormatter.toString()
+        val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
 
         val napsPath = ConfigReader().readConfig("napsPath")
 
-        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile, model.scanFormat)
+        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")
         Runtime.getRuntime().exec(cmd)
 
@@ -53,10 +53,8 @@ class CommandController : Controller() {
         napsPath: String,
         scanPath: String,
         filename: String,
-        profileName: String,
-        format: String
+        profileName: String
     ): String {
-
-        return "$napsPath\\NAPS2.Console.exe -o ${scanPath + "\\" + filename}.$format -p $profileName"
+        return "$napsPath\\NAPS2.Console.exe -o $scanPath\\$filename -p $profileName"
     }
 }
