@@ -63,7 +63,7 @@ class ScanProfileModel() : JsonModel {
 
 data class ScanProfileJson(
     val id: Int,
-    val command: String,
+    val napsProfile: String,
     val buttonNumber: Int,
     val title: String,
     val imgPath: String,
@@ -74,7 +74,7 @@ data class ScanProfileJson(
     fun toScanProfileData(): ScanProfileModel {
         var profile = ScanProfileModel()
         profile.id = id
-        profile.napsProfile = command
+        profile.napsProfile = napsProfile
         profile.buttonNumber = buttonNumber.toString()
         profile.title = title
         profile.imgFilename = imgPath
