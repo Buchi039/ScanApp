@@ -1,4 +1,0 @@
-2021-01-20 13:22:05.1144 Error setting property System.ArgumentException: Could not set property 6151 (Horizontal Extent) value to "1653"
-Parametername: value
-   bei NAPS2.Scan.Wia.Native.WiaProperty.set_Value(Object value)
-   bei NAPS2.Scan.Wia.Native.WiaExtensions.SetProperty(WiaItemBase item, Int32 propId, Int32 value)
