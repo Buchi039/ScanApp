@@ -178,15 +178,10 @@ class Editor : View("User Editor") {
                                 /** DirectoryChooser für Auswahl des Speicherorts */
                                 button("Wählen") {
                                     action {
-                                        chooseDirectory {
-                                            directoryChooser = this
-                                            initialDirectory = File(System.getProperty("user.home"))
-
-                                            setOnAction { e ->
-                                                val selectedDirectory = directoryChooser.showDialog(primaryStage)
-                                                scanProfileScanPathField.text = selectedDirectory.absolutePath
-                                            }
-                                        }
+                                        directoryChooser = DirectoryChooser()
+                                        directoryChooser.initialDirectory = File(System.getProperty("user.home"))
+                                        scanProfileScanPathField.text =
+                                            directoryChooser.showDialog(primaryStage).absolutePath
                                     }
                                     prefWidthProperty().bind(scanProfileFormatCombo.widthProperty())
                                 }
