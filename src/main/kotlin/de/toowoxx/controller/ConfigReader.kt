@@ -28,7 +28,11 @@ class ConfigReader {
         }
     }
 
-
+    /**
+     * Liest das profiles.xml von NAPS2 aus und gibt alle verfügbaren ScanProfile zurück, welche in NAPS erstellt wurden
+     *
+     * @return Liste mit NAPS Scan-Profilen
+     */
     fun readNAPSProfiles(): List<String> {
 
         val napsPath = readConfig("napsPath")
