@@ -3,9 +3,14 @@ package de.toowoxx.controller
 import ConfigReader
 import de.toowoxx.model.ScanProfileModel
 import tornadofx.Controller
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.nio.charset.Charset
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+
 
 class CommandController : Controller() {
 
@@ -14,12 +19,12 @@ class CommandController : Controller() {
      *
      * @param model Das Model mit den hinterlegten Scan-Einstellungen
      */
-    fun runScanCmd(model: ScanProfileModel) {
+    fun runScanCmd(model: ScanProfileModel): Process? {
 
         /** TODO löschen */
         if (System.getProperty("os.name") == "Mac OS X") {
-            runTestCmd()
-            return
+            return runTestCmd()
+
         }
 
         val dateTimeFormatter = DateTimeFormatter
@@ -29,16 +34,16 @@ class CommandController : Controller() {
         val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
 
         val napsPath = ConfigReader().readConfig("napsPath")
-        val napCMD = "$napsPath\\App"
+        val napsCMD = "$napsPath\\App"
 
-        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
+        val cmd = buildNapsCmd(napsCMD, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")
-        Runtime.getRuntime().exec(cmd)
-
+        var exec = Runtime.getRuntime().exec(cmd)
+        return exec
     }
 
-    fun runTestCmd() {
-        Runtime.getRuntime().exec("/usr/bin/open -a " + "Keka")
+    fun runTestCmd(): Process? {
+        return Runtime.getRuntime().exec("ping 8.8.8.8 -c 4")
     }
 
     /**
@@ -57,5 +62,23 @@ class CommandController : Controller() {
         profileName: String
     ): String {
         return "$napsPath\\NAPS2.Console.exe -o $scanPath\\$filename -p $profileName"
+    }
+
+    fun getExecLog(stdInput: InputStream): String {
+
+        val reader = BufferedReader(InputStreamReader(stdInput, Charset.forName("windows-1252")))
+
+        var output = ""
+        var line: String? = null
+        while (reader.readLine().also { line = it } != null) {
+
+            output += "$line\n\r"
+
+        }
+        return output
+    }
+
+    fun isScannerOffline(cmdOutput: String): Boolean {
+        return (cmdOutput.contains("offline"))
     }
 }

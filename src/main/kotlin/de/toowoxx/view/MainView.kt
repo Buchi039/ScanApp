@@ -4,9 +4,11 @@ import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.UserModel
 import javafx.collections.ObservableList
+import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.layout.GridPane
+import javafx.scene.text.Font
 import tornadofx.*
 
 
@@ -46,7 +48,21 @@ class MainView : View() {
         }
         // Gridpane mit den Userbuttons erstellen und der View hinzufügen
         userbuttons = genUserButtonsGridpane(userController.userList)
-        root.add(userbuttons)
+
+
+        var borderp = borderpane() {
+            top {
+                hbox {
+                    text() {
+                        text = "Benutzer wählen"
+                        font = Font.font(20.0)
+                        alignment = Pos.CENTER
+                    }
+                }
+            }
+            center = userbuttons
+        }
+        root.add(borderp)
     }
 
     /**
@@ -60,8 +76,8 @@ class MainView : View() {
         userbuttons.autosize()
         root.autosize()
 
-        this.setWindowMaxSize(userbuttons.width, userbuttons.height + menubar.height + 25.0)
-        this.setWindowMinSize(userbuttons.width, userbuttons.height + menubar.height + 25.0)
+        this.setWindowMaxSize(userbuttons.width, userbuttons.height + menubar.height + 99.0)
+        this.setWindowMinSize(userbuttons.width, userbuttons.height + menubar.height + 99.0)
     }
 
     /**

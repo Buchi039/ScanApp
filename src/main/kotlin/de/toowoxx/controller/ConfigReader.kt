@@ -37,15 +37,20 @@ class ConfigReader {
 
         val napsPath = readConfig("napsPath")
 
-        val xmlFile = "$napsPath/Data/profiles.xml"
-        val xmlStr = File(xmlFile).readText()
-        val jsonObj = XML.toJSONObject(xmlStr)
+        val xmlFilePath = "$napsPath/Data/profiles.xml"
+        val xmlFile = File(xmlFilePath)
+        if (xmlFile.exists()) {
+            val xmlStr = xmlFile.readText()
+            val jsonObj = XML.toJSONObject(xmlStr)
 
-        var arrayOfScanProfile = jsonObj.getJSONObject("ArrayOfScanProfile").getJSONArray("ScanProfile")
-        val displayNames = mutableListOf<String>()
-        arrayOfScanProfile.forEach { profile ->
-            displayNames.add(JSONObject(profile.toString()).getString("DisplayName"))
-        }
-        return displayNames
+            var arrayOfScanProfile = jsonObj.getJSONObject("ArrayOfScanProfile").getJSONArray("ScanProfile")
+            val displayNames = mutableListOf<String>()
+            arrayOfScanProfile.forEach { profile ->
+                displayNames.add(JSONObject(profile.toString()).getString("DisplayName"))
+            }
+            return displayNames
+        } else
+            return listOf()
+
     }
 }
