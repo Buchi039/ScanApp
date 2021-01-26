@@ -32,11 +32,13 @@ class CommandController : Controller() {
             .withZone(ZoneId.systemDefault())
             .format(Instant.now())
         val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
+        val filename2 = "scan\$(nnnn).${model.scanFormat}"
 
-        val napsPath = ConfigReader().readConfig("napsPath")
-        val napsCMD = "$napsPath\\App"
+        var napsPath = ConfigReader().readConfig("napsPath")
+        napsPath += "\\App\\NAPS2.Console.exe"
 
-        val cmd = buildNapsCmd(napsCMD, model.scanPath, filename, model.napsProfile)
+
+        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")
         return Runtime.getRuntime().exec(cmd)
     }
@@ -48,19 +50,19 @@ class CommandController : Controller() {
     /**
      * Erstellt den CMD-Befehl
      *
-     * @param napsPath Der Pfad zu der NAPS2.Console.exe
+     * @param napsConsolePath Der Pfad zu der NAPS2.Console.exe
      * @param scanPath Der Pfad wo der Scan gespeichert werden soll
      * @param filename Der Name des Scans
      * @param profileName Der Name des NAPS2 Profil, welches für den Scan verwendet werden soll
      * @return Der ausführbare CMD String
      */
     private fun buildNapsCmd(
-        napsPath: String,
+        napsConsolePath: String,
         scanPath: String,
         filename: String,
         profileName: String
     ): String {
-        return "$napsPath\\NAPS2.Console.exe -o $scanPath\\$filename -p $profileName"
+        return "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\""
     }
 
     fun getExecLog(stdInput: InputStream): String {

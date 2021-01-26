@@ -7,6 +7,7 @@ import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.control.Button
+import javafx.scene.image.Image
 import javafx.scene.layout.GridPane
 import javafx.scene.text.Font
 import tornadofx.*
@@ -27,6 +28,8 @@ class MainView : View() {
      *  Baut Oberfäche der MainView
      */
     init {
+        addStageIcon(Image("file:resources/icon_print.png"))
+
         //UserController initiieren
         userController.init()
 

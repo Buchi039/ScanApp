@@ -80,13 +80,6 @@ class ScanbuttonView(userid: Int) : View() {
     private fun genScanButton(scanProfileModel: ScanProfileModel): Button {
 
         val button = button(scanProfileModel.title) {
-            minHeight = 100.0
-            minWidth = 100.0
-
-            maxHeight = 100.0
-            maxWidth = 100.0
-
-            isWrapText = true
 
             val buttonStackpane = stackpane()
             add(buttonStackpane)
@@ -120,13 +113,13 @@ class ScanbuttonView(userid: Int) : View() {
                             Thread.sleep(2000L)
                         } ui {
                             pi.hide()
-                            text = scanProfileModel.title
+                            buttonDesign(scanProfileModel, this)
                             buttonGridpane.isDisable = false
                         }
                     } else {
                         println(execLog)
                         pi.hide()
-                        text = scanProfileModel.title
+                        buttonDesign(scanProfileModel, this)
                         showErrorAlert(execLog)
 
                     }
@@ -139,6 +132,20 @@ class ScanbuttonView(userid: Int) : View() {
         }
 
         /** Wenn das Scanprofile ein Image hinterlegt hat wird ein Icon auf den Button gelegt */
+        buttonDesign(scanProfileModel, button)
+        return button
+    }
+
+    private fun buttonDesign(scanProfileModel: ScanProfileModel, button: Button) {
+
+        button.minHeight = 100.0
+        button.minWidth = 100.0
+
+        button.maxHeight = 100.0
+        button.maxWidth = 100.0
+
+        button.isWrapText = true
+
         if (scanProfileModel.imgFilename != "") {
             val iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
             val img = Image("file:$iconPath")
@@ -147,8 +154,9 @@ class ScanbuttonView(userid: Int) : View() {
             imgView.fitWidth = 70.0
             button.graphic = imgView
             button.text = ""
+        } else {
+            button.text = scanProfileModel.title
         }
-        return button
     }
 
     /**
