@@ -4,7 +4,6 @@ import ConfigReader
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanProfileModel
-import de.toowoxx.model.UserModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Pos
 import javafx.scene.control.*
@@ -21,8 +20,6 @@ class Editor : View("User Editor") {
     val mainController: MainController by inject()
     val userController: UserController by inject()
 
-    var usernameField: TextField by singleAssign()
-
     var scanProfileList = observableListOf<ScanProfileModel>()
     var scanProfileTable: TableView<ScanProfileModel> by singleAssign()
 
@@ -35,9 +32,7 @@ class Editor : View("User Editor") {
 
     var scanButtonFieldset = fieldset()
 
-    var userTable: TableView<UserModel> by singleAssign()
 
-    var prevSelectionUser: UserModel? = null
     var prevSelectionScanProfile: ScanProfileModel? = null
 
     var iconButton: Button by singleAssign()
@@ -49,47 +44,11 @@ class Editor : View("User Editor") {
     override val root = hbox()
 
     init {
+        scanProfileList = userController.getDefaultUser().userButtons
         with(root) {
             minHeight = 510.0
 
-            /** Spalte 1 mit Auswahl des Users
-             * Besteht aus Borderpane
-             * Center -> Tabelview
-             * Bottom -> Buttons zum Neu erstellen / löschen
-             * */
-            borderpane {
-                center {
-                    tableview(userController.userList) {
-                        userTable = this
-                        column("User", UserModel::usernameProperty) {
-                            prefWidthProperty().bind(userTable.widthProperty())
-                        }
-                        // Edit the currently selected User
-                        selectionModel.selectedItemProperty().onChange {
-                            editUser(it)
-                            if (it != null)
-                                scanProfileList.setAll(it.userButtons)
-                            scanButtonFieldset.hide()
-                        }
-                    }
-
-                    bottom {
-                        hbox {
-                            button("Neuer User").action {
-                                newUser()
-                            }
-                            button("Löschen").action {
-                                deleteUser()
-                            }
-                            paddingTop = 10
-                        }
-                        paddingAll = 15
-                    }
-                }
-
-            }
-
-            /** Spalte 2 mit Auswahl des Scanprofils von User
+            /** Spalte 1 mit Auswahl des Scanprofils von User
              * * Besteht aus Borderpane
              * Center -> Tabelview mit ScanProfiles
              * Bottom -> Buttons zum Neu erstellen / löschen
@@ -105,6 +64,7 @@ class Editor : View("User Editor") {
                         column("NAPS", ScanProfileModel::napsProfileProperty) {
                             prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
                         }
+
 
                         selectionModel.selectedItemProperty().onChange {
                             editScanButton(it)
@@ -130,7 +90,7 @@ class Editor : View("User Editor") {
                 paddingAll = 15
             }
 
-            /** Spalte 3 mit Feldern zum editieren der Userdaten und Scanprofil Daten
+            /** Spalte 2 mit Feldern zum editieren der Userdaten und Scanprofil Daten
              * Center -> Felder zum editieren der Daten
              * Bottom -> Button zum speicher der Daten
              */
@@ -138,13 +98,6 @@ class Editor : View("User Editor") {
                 center {
                     minWidth = 400.0
                     form {
-                        fieldset("User bearbeiten") {
-                            field("Name") {
-                                textfield {
-                                    usernameField = this
-                                }
-                            }
-                        }
                         fieldset("Scan Profil bearbeiten") {
                             scanButtonFieldset = this
                             field("Titel") {
@@ -236,7 +189,7 @@ class Editor : View("User Editor") {
                         bottom {
                             hbox {
                                 button("Speichern").action {
-                                    saveUser()
+                                    saveChanges()
                                 }
                             }
                             paddingAll = 15
@@ -247,22 +200,6 @@ class Editor : View("User Editor") {
         }
     }
 
-    /**
-     * Funktion um ausgewählten User zu löschen
-     *
-     */
-    private fun deleteUser() {
-        val deletedUser = userTable.selectedItem!!
-
-        for (user in userController.userList) {
-            if (user.id == deletedUser.id) {
-                userController.userList.remove(deletedUser)
-                break
-            }
-        }
-        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-        mainView.refreshUserbuttons()
-    }
 
     /**
      * Funktion um ausgewähltes Scan Profil zu löschen
@@ -278,7 +215,7 @@ class Editor : View("User Editor") {
             }
         }
 
-        val selectedUser = userTable.selectedItem!!
+        val selectedUser = userController.getDefaultUser()
         selectedUser.userButtons = observableListOf()
         selectedUser.userButtons.addAll(scanProfileList)
 
@@ -286,29 +223,9 @@ class Editor : View("User Editor") {
         prevSelectionScanProfile = null
     }
 
-    /**
-     * Funktion um neues User zu erstellen
-     */
-    private fun newUser() {
-        val newUser = UserModel()
-
-        // Neue (noch nicht benutzte) ID suchen
-        var usedId = 0
-        for (user in userController.userList) {
-            if (usedId < user.id)
-                usedId = user.id
-        }
-
-        newUser.id = usedId + 1
-        newUser.username = "Neu"
-
-        userController.userList.add(newUser)
-        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-        mainView.refreshUserbuttons()
-    }
 
     /**
-     * Funktion um neues ScanProfl zu erstellen
+     * Funktion um neues ScanProfil zu erstellen
      *
      */
     private fun newScanProfile() {
@@ -326,30 +243,13 @@ class Editor : View("User Editor") {
         }
         profile.title = "Neu"
         profile.imgFilename = ""
-        profile.scanPath = ""
+        profile.scanPath = File(System.getProperty("user.home")).toString()
         profile.scanFormat = ""
         profile.napsProfile = ""
         scanProfileList.add(profile)
 
     }
 
-    /**
-     * Setzt alle Textfelder usw. auf das zu editierende UserModel
-     *
-     * @param user Das zu editierende UserModel
-     */
-    private fun editUser(user: UserModel?) {
-        //Zuerst die Felder von dem zuvor gewählten User lösen
-        if (user != null) {
-            prevSelectionUser?.apply {
-                usernameProperty.unbindBidirectional(usernameField.textProperty())
-            }
-            // Textfelder mit ausgewählten User verbinden
-            usernameField.bind(user.usernameProperty)
-            // User merken
-            prevSelectionUser = user
-        }
-    }
 
     /**
      * Setzt alle Textfelder usw. auf das zu editierende ScanProfile
@@ -386,21 +286,15 @@ class Editor : View("User Editor") {
     }
 
     /**
-     * Speichert die User mit allen Änderungen
+     * Speichert die Änderungen
      *
      */
-    private fun saveUser() {
-        // Ausgewählten user aus der tableView holen
-        val editedUser = userTable.selectedItem!!
+    private fun saveChanges() {
 
-        for (it in userController.userList) {
-            if (it.id == editedUser.id) {
-                editedUser.userButtons.setAll(scanProfileList)
-                break
-            }
-        }
-        println("Saving ${editedUser.usernameProperty} / ")
-        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-        mainView.refreshUserbuttons()
+        val editedUser = userController.getDefaultUser()
+        val userAsList = observableListOf(editedUser)
+
+        userController.saveUsersToJson(userController.dataToJsonData(userAsList))
+        //mainView.refreshUserbuttons()
     }
 }

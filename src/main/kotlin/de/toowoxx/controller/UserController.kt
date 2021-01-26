@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken
 import de.toowoxx.model.ScanProfileJson
 import de.toowoxx.model.UserModel
 import de.toowoxx.model.UserModelJson
-import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import tornadofx.Controller
 import tornadofx.asObservable
@@ -39,14 +38,6 @@ class UserController : Controller() {
             listOf()
     }
 
-    fun getUserByUsername(username: String?): UserModel? {
-
-        for (user in userList) {
-            if (user.username == username)
-                return user
-        }
-        return null
-    }
 
     fun getUserById(userId: Int): UserModel {
         for (user in userList) {
@@ -56,31 +47,25 @@ class UserController : Controller() {
         return UserModel()
     }
 
+    fun getDefaultUser(): UserModel {
+        return getUserById(1)
+    }
+
     fun generateDummyUsers(): MutableList<UserModelJson> {
 
-        val button1 = ScanProfileJson(1, "Profil1", "Profil1", "save.png", System.getProperty("user.home"), "pdf")
+        val button1 = ScanProfileJson(1, "Profil1", "Profil1", "", System.getProperty("user.home"), "pdf")
         val button2 = ScanProfileJson(2, "Profil2", "Profil2", "", System.getProperty("user.home"), "pdf")
         val button3 =
-            ScanProfileJson(3, "Profil3", "Profil3", "testicon.png", System.getProperty("user.home"), "pdf")
+            ScanProfileJson(3, "Profil3", "Profil3", "", System.getProperty("user.home"), "jpg")
 
 
         var buttonList = mutableListOf(button1, button2, button3)
-        val user = UserModelJson(1, "Michael", buttonList)
+        val user = UserModelJson(1, "Max", buttonList)
 
-        buttonList = mutableListOf(button2, button3)
-        val user2 = UserModelJson(2, "Stefan", buttonList)
 
-        return mutableListOf(user, user2)
+        return mutableListOf(user)
     }
 
-    fun getUsernames(): ObservableList<String> {
-
-        val usernames = FXCollections.observableArrayList<String>()
-        for (it in loadUsersFromJson()) {
-            usernames.add(it.username)
-        }
-        return usernames
-    }
 
     fun dataToJsonData(list: ObservableList<UserModel>): MutableList<UserModelJson> {
 

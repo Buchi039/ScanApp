@@ -1,20 +1,11 @@
 package de.toowoxx.controller
 
 import ConfigReader
-import de.toowoxx.view.ScanbuttonView
 import tornadofx.Controller
 import java.io.File
 
 class MainController : Controller() {
 
-    /**
-     * Öffnet die View mit der Übersicht aller Scan Buttons
-     *
-     * @param username
-     */
-    fun showScanbuttonView(userid: Int) {
-        ScanbuttonView(userid).openWindow()
-    }
 
     /**
      * Gibt eine Liste mit allen verfügbaren Icons für die Buttons zurück
