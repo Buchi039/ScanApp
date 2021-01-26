@@ -33,7 +33,7 @@ class MainController : Controller() {
     }
 
     fun getAvailableFormats(): List<String> {
-        return listOf<String>("pdf", "jpg", "png", "exif", "tif")
+        return listOf("pdf", "jpg", "png", "exif", "tif")
     }
 
 }

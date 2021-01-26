@@ -14,8 +14,7 @@ import tornadofx.*
 import java.io.File
 
 
-class Editor : View("User Editor") {
-    val mainView: MainView by inject()
+class Editor : View("Editor") {
 
     val mainController: MainController by inject()
     val userController: UserController by inject()
@@ -57,6 +56,7 @@ class Editor : View("User Editor") {
                 center {
                     tableview(scanProfileList) {
                         scanProfileTable = this
+
                         column("Titel", ScanProfileModel::titleProperty) {
                             prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
 
@@ -85,6 +85,7 @@ class Editor : View("User Editor") {
                             }
                         }
                         paddingTop = 10
+                        alignment = Pos.BASELINE_RIGHT
                     }
                 }
                 paddingAll = 15
@@ -183,7 +184,7 @@ class Editor : View("User Editor") {
                                 }
                                 hiddenWhen(!iconCheckboxProperty)
                             }
-                        }.hide()
+                        }
 
                         /** Button zum speichern der veränderten Daten */
                         bottom {
@@ -191,6 +192,10 @@ class Editor : View("User Editor") {
                                 button("Speichern").action {
                                     saveChanges()
                                 }
+                                button("Schließen").action {
+                                    close()
+                                }
+                                alignment = Pos.BASELINE_RIGHT
                             }
                             paddingAll = 15
                         }
