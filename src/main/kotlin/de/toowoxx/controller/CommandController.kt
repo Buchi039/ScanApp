@@ -38,8 +38,7 @@ class CommandController : Controller() {
 
         val cmd = buildNapsCmd(napsCMD, model.scanPath, filename, model.napsProfile)
         println("Command: $cmd")
-        var exec = Runtime.getRuntime().exec(cmd)
-        return exec
+        return Runtime.getRuntime().exec(cmd)
     }
 
     fun runTestCmd(): Process? {

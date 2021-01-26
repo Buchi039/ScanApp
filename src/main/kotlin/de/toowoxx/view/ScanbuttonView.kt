@@ -56,8 +56,8 @@ class ScanbuttonView(userid: Int) : View() {
         val user = userController.getUserById(userid)
 
         val maxCols = 8     // Anzahl der maximalen Spalten
-        var rIndex = 1    // Index der Reihen Position
-        var cIndex = 1    // Index der Spaltenposition
+        var rIndex = 1      // Index der Reihen Position
+        var cIndex = 1      // Index der Spaltenposition
         if (user != null) {
             for (it in user.userButtons) {
                 buttonGrid.add(genScanButton(it), cIndex, rIndex)

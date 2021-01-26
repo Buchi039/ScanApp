@@ -119,20 +119,18 @@ class MainView : View() {
 
 
         val maxCols = 8     // Anzahl der maximalen Spalten
-        var rowIndex = 1    // Index der Reihen Position
-        var colIndex = 1    // Index der Spaltenposition
+        var rIndex = 1      // Index der Reihen Position
+        var cIndex = 1      // Index der Spaltenposition
 
         // Jeden Button dem generierten Gridpane hinzufügen
         for (button in buttons) {
-            gridPane.add(button, colIndex, rowIndex)
-            colIndex++
-            if (colIndex > maxCols) {
-                colIndex = 1
-                rowIndex++
+            gridPane.add(button, cIndex, rIndex)
+            cIndex++
+            if (cIndex > maxCols) {
+                cIndex = 1
+                rIndex++
             }
-
         }
         return gridPane
     }
-
 }
