@@ -12,6 +12,7 @@ import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.TextArea
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
@@ -28,6 +29,7 @@ class MainView : View() {
 
     var menubar = menubar()       // Menubar am oberen Rand des Fensters
     private var buttonGridpane: GridPane = gridpane()
+    private var borderPane: BorderPane = borderpane()
 
     override var root: Parent = vbox() {}
 
@@ -49,6 +51,9 @@ class MainView : View() {
                     println("admin pressed")
                     adminView.openWindow()
                 }
+                item("Refresh").action {
+                    refreshView()
+                }
                 item("Beenden").action {
                     close()
                 }
@@ -56,7 +61,8 @@ class MainView : View() {
         }
 
 
-        val border = borderpane() {
+        borderpane() {
+            borderPane = this
             minWidth = 500.0
             top {
                 hbox {
@@ -68,14 +74,11 @@ class MainView : View() {
                     }
                 }
             }
-            var buttons = genScanButtonGridpane()
-            buttons.alignment = Pos.CENTER
-            center = buttons
+            var buttonGridpane = genScanButtonGridpane()
+            center = buttonGridpane
         }
 
-        root.add(border)
-
-
+        root.add(borderPane)
     }
 
 
@@ -86,7 +89,9 @@ class MainView : View() {
      * @return GridPane mit allen Buttons des Users
      */
     private fun genScanButtonGridpane(): GridPane {
-        val buttonGrid = gridpane()
+        val buttonGrid = gridpane() {
+            alignment = Pos.CENTER
+        }
         val user = userController.getDefaultUser()
 
         val maxCols = 8     // Anzahl der maximalen Spalten
@@ -161,12 +166,12 @@ class MainView : View() {
                     }
                 } ui {
                     // Wenn Scan ausgeführt ist Log prüfen.
-                    if (execLog.isEmpty()) {    // Wenn log leer -> erfolgreicher Scan
+                    if (execLog.isEmpty()) {                   // Wenn log leer -> erfolgreicher Scan
                         progressIndicator.progress = 100.0     // Progress auf 100% setzen um Haken anzuzeigen
                         runAsync {
-                            Thread.sleep(2000L)  // Haken X ms lang anzeigen
+                            Thread.sleep(2000L)          // Haken X ms lang anzeigen
                         } ui {
-                            progressIndicator.hide()    // Nach Wartezeit ProgressIndicator ausblenden
+                            progressIndicator.hide()           // Nach Wartezeit ProgressIndicator ausblenden
 
                             // Wenn ProgressIndicator ausgeblendet wird Text bzw. Bild wieder einblenden
                             if (scanProfileModel.imgFilename != "") {
@@ -174,9 +179,11 @@ class MainView : View() {
                             } else
                                 text = scanProfileModel.title
                         }
-                    } else {  // Wenn log nicht leer -> Fehler ist aufgetreten
-                        println(execLog)    // Log auf Console ausgeben
-                        progressIndicator.hide()           // ProgressIndicator ausblenden
+
+
+                    } else {                        // Wenn log nicht leer -> Fehler ist aufgetreten
+                        println(execLog)            // Log auf Console ausgeben
+                        progressIndicator.hide()    // ProgressIndicator ausblenden
 
                         // Wenn ProgressIndicator ausgeblendet wird Text bzw. Bild wieder einblenden
                         if (scanProfileModel.imgFilename != "") {
@@ -248,7 +255,24 @@ class MainView : View() {
     }
 
     fun refreshView() {
+        return
 
+        val genScanButtonGridpane = genScanButtonGridpane()
+        borderPane.center = genScanButtonGridpane
+        borderPane.center.autosize()
+
+
+        if (borderPane.minWidth > genScanButtonGridpane.columnCount * 100.0)
+            primaryStage.minWidth = borderPane.minWidth
+        else
+            primaryStage.minWidth = genScanButtonGridpane.columnCount * 100.0
+
+
+        primaryStage.minHeight = (genScanButtonGridpane.rowCount * 100.0) + 70.0
+        // primaryStage.minWidth = genScanButtonGridpane.columnCount * 100.0
+
+        primaryStage.maxWidth = primaryStage.minWidth
+        primaryStage.maxHeight = primaryStage.minHeight
     }
 
 }

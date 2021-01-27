@@ -19,8 +19,7 @@ class ConfigReader {
             FileInputStream("config/config.properties").use { input ->
                 val prop = Properties()
                 prop.load(input)
-                val value = String(prop.getProperty(searchElement).toByteArray(charset("windows-1252")))
-                return value
+                return String(prop.getProperty(searchElement).toByteArray(charset("windows-1252")))
             }
         } catch (ex: IOException) {
             ex.printStackTrace()

@@ -15,6 +15,7 @@ import java.io.File
 
 
 class Editor : View("Editor") {
+    val mainView: MainView by inject()
 
     val mainController: MainController by inject()
     val userController: UserController by inject()
@@ -67,7 +68,7 @@ class Editor : View("Editor") {
 
 
                         selectionModel.selectedItemProperty().onChange {
-                            editScanButton(it)
+                            editScanProfile(it)
                             scanButtonFieldset.show()
                         }
                     }
@@ -81,7 +82,20 @@ class Editor : View("Editor") {
                         }
                         button("Profil löschen") {
                             action {
-                                deleteScanButton()
+                                /** Bei Buttonklick Confirmation Dialog anzeigen
+                                 * ob Profil wirklich gelöscht werden soll
+                                 */
+                                alert(
+                                    type = Alert.AlertType.CONFIRMATION,
+                                    header = "Profil löschen",
+                                    content = "Lösche Profil: ${scanProfileTable.selectionModel.selectedItem.title}",
+                                    actionFn = { btnType ->
+                                        if (btnType.buttonData == ButtonBar.ButtonData.OK_DONE) {
+                                            deleteScanProfile()
+                                            mainView.refreshView()
+                                        }
+                                    }
+                                )
                             }
                         }
                         paddingTop = 10
@@ -134,8 +148,9 @@ class Editor : View("Editor") {
                                     action {
                                         directoryChooser = DirectoryChooser()
                                         directoryChooser.initialDirectory = File(System.getProperty("user.home"))
-                                        scanProfileScanPathField.text =
-                                            directoryChooser.showDialog(primaryStage).absolutePath
+                                        val showDialog = directoryChooser.showDialog(primaryStage)
+                                        if (showDialog != null)
+                                            scanProfileScanPathField.text = showDialog.absolutePath
                                     }
                                     prefWidthProperty().bind(scanProfileFormatCombo.widthProperty())
                                 }
@@ -191,6 +206,7 @@ class Editor : View("Editor") {
                             hbox {
                                 button("Speichern").action {
                                     saveChanges()
+                                    mainView.refreshView()
                                 }
                                 button("Schließen").action {
                                     close()
@@ -210,11 +226,11 @@ class Editor : View("Editor") {
      * Funktion um ausgewähltes Scan Profil zu löschen
      *
      */
-    private fun deleteScanButton() {
+    private fun deleteScanProfile() {
         val deletedScanButton = scanProfileTable.selectedItem!!
 
-        for (button in scanProfileList) {
-            if (button.id == deletedScanButton.id) {
+        for (profile in scanProfileList) {
+            if (profile.id == deletedScanButton.id) {
                 scanProfileList.remove(deletedScanButton)
                 break
             }
@@ -225,7 +241,8 @@ class Editor : View("Editor") {
         selectedUser.userButtons.addAll(scanProfileList)
 
         userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-        prevSelectionScanProfile = null
+
+  
     }
 
 
@@ -261,7 +278,7 @@ class Editor : View("Editor") {
      *
      * @param scanProfile Das zu editierende Profil
      */
-    private fun editScanButton(scanProfile: ScanProfileModel?) {
+    private fun editScanProfile(scanProfile: ScanProfileModel?) {
 
         //Zuerst die Felder von dem zuvor gewählten Scanprofil lösen
         if (scanProfile != null) {
@@ -302,4 +319,5 @@ class Editor : View("Editor") {
         userController.saveUsersToJson(userController.dataToJsonData(userAsList))
         //mainView.refreshUserbuttons()
     }
+
 }

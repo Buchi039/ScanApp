@@ -6,7 +6,6 @@ import tornadofx.Controller
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.nio.charset.Charset
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -32,7 +31,6 @@ class CommandController : Controller() {
             .withZone(ZoneId.systemDefault())
             .format(Instant.now())
         val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
-        val filename2 = "scan\$(nnnn).${model.scanFormat}"
 
         var napsPath = ConfigReader().readConfig("napsPath")
         napsPath += "\\App\\NAPS2.Console.exe"
@@ -44,7 +42,7 @@ class CommandController : Controller() {
     }
 
     fun runTestCmd(): Process? {
-        return Runtime.getRuntime().exec("ping 8.8.8.8 -c 4")
+        return Runtime.getRuntime().exec("cd ..")
     }
 
     /**
@@ -67,7 +65,7 @@ class CommandController : Controller() {
 
     fun getExecLog(stdInput: InputStream): String {
 
-        val reader = BufferedReader(InputStreamReader(stdInput, Charset.forName("windows-1252")))
+        val reader = BufferedReader(InputStreamReader(stdInput))
 
         var output = ""
         var line: String? = null
@@ -76,6 +74,7 @@ class CommandController : Controller() {
             output += "$line\n\r"
 
         }
+        reader.close()
         return output
     }
 
