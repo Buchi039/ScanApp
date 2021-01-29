@@ -66,7 +66,6 @@ class MainView : View() {
                 menubar = this
                 menu("Bearbeiten") {
                     item("Admin").action {
-                        println("admin pressed")
                         adminView.openWindow()
                     }
                     item("Beenden").action {
@@ -280,8 +279,6 @@ class MainView : View() {
 
         val buttonCount = buttonList.size
         val rowCount = ceil(buttonCount.toDouble() / maxButtonColumns)
-        println("buttonc: $buttonCount rwoCount: $rowCount")
-
 
         var columnCount = if (rowCount > 1)
             maxButtonColumns
