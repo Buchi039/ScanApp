@@ -40,45 +40,58 @@ class MainView : View() {
      */
     init {
 
-        //UserController initiieren
-        userController.init()
-
-        //Menubar -> Leiste am oberen Rand des Fensters
-        menubar {
-            menubar = this
-            menu("Bearbeiten") {
-                item("Admin").action {
-                    println("admin pressed")
-                    adminView.openWindow()
+        if (!mainController.checkLicence()) {
+            root.add(vbox {
+                minWidth = 250.0
+                minHeight = 50.0
+                text {
+                    text = "Software nicht aktiviert"
+                    font = Font.font(20.0)
+                    alignment = Pos.CENTER
                 }
-                item("Refresh").action {
-                    refreshView()
-                }
-                item("Beenden").action {
-                    close()
-                }
-            }
-        }
+            })
+        } else {
 
+            //UserController initiieren
+            userController.init()
 
-        borderpane() {
-            borderPane = this
-            minWidth = 500.0
-            top {
-                hbox {
-                    minHeight = 70.0
-                    text() {
-                        text = "Scan-Profil auswählen"
-                        font = Font.font(25.0)
-                        alignment = Pos.CENTER
+            //Menubar -> Leiste am oberen Rand des Fensters
+            menubar {
+                menubar = this
+                menu("Bearbeiten") {
+                    item("Admin").action {
+                        println("admin pressed")
+                        adminView.openWindow()
+                    }
+                    item("Refresh").action {
+                        refreshView()
+                    }
+                    item("Beenden").action {
+                        close()
                     }
                 }
             }
-            var buttonGridpane = genScanButtonGridpane()
-            center = buttonGridpane
-        }
 
-        root.add(borderPane)
+
+            borderpane() {
+                borderPane = this
+                minWidth = 500.0
+                top {
+                    hbox {
+                        minHeight = 70.0
+                        text() {
+                            text = "Scan-Profil auswählen"
+                            font = Font.font(25.0)
+                            alignment = Pos.CENTER
+                        }
+                    }
+                }
+                var buttonGridpane = genScanButtonGridpane()
+                center = buttonGridpane
+            }
+
+            root.add(borderPane)
+        }
     }
 
 

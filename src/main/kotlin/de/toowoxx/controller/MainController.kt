@@ -3,6 +3,8 @@ package de.toowoxx.controller
 import ConfigReader
 import tornadofx.Controller
 import java.io.File
+import java.net.InetAddress
+import java.security.MessageDigest
 
 class MainController : Controller() {
 
@@ -36,4 +38,38 @@ class MainController : Controller() {
         return listOf("pdf", "jpg", "png", "exif", "tif")
     }
 
+    fun checkLicence(): Boolean {
+        val key = ConfigReader().readConfig("activationkey")
+        return key == getHostnameHash()
+    }
+
+
+    fun getHostnameHash(): String? {
+
+        //https://hashgenerator.de
+        try {
+            var hostname = InetAddress.getLocalHost().hostName
+            val bytes = MessageDigest
+                .getInstance("SHA-256")
+                .digest(hostname.toByteArray())
+            return bytesToHex(bytes)
+        } catch (E: Exception) {
+            System.err.println("System Name Exp : " + E.message)
+        }
+        return ""
+    }
+
+
+    private fun bytesToHex(hash: ByteArray): String? {
+        val hexString = StringBuilder(2 * hash.size)
+        for (i in hash.indices) {
+            val hex = Integer.toHexString(0xff and hash[i].toInt())
+            if (hex.length == 1) {
+                hexString.append('0')
+            }
+            hexString.append(hex)
+        }
+        return hexString.toString()
+
+    }
 }
