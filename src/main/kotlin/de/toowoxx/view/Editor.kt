@@ -44,6 +44,7 @@ class Editor : View("Editor") {
     override val root = hbox()
 
     init {
+        userController.init()
         scanProfileList = userController.getDefaultUser().userButtons
         with(root) {
             minHeight = 510.0
@@ -92,7 +93,6 @@ class Editor : View("Editor") {
                                     actionFn = { btnType ->
                                         if (btnType.buttonData == ButtonBar.ButtonData.OK_DONE) {
                                             deleteScanProfile()
-                                            mainView.refreshView()
                                         }
                                     }
                                 )
@@ -235,14 +235,6 @@ class Editor : View("Editor") {
                 break
             }
         }
-
-        val selectedUser = userController.getDefaultUser()
-        selectedUser.userButtons = observableListOf()
-        selectedUser.userButtons.addAll(scanProfileList)
-
-        userController.saveUsersToJson(userController.dataToJsonData(userController.userList))
-
-  
     }
 
 
@@ -312,12 +304,9 @@ class Editor : View("Editor") {
      *
      */
     private fun saveChanges() {
-
         val editedUser = userController.getDefaultUser()
         val userAsList = observableListOf(editedUser)
-
         userController.saveUsersToJson(userController.dataToJsonData(userAsList))
-        //mainView.refreshUserbuttons()
     }
 
 }

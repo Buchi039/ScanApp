@@ -34,32 +34,52 @@ class MainController : Controller() {
         return ConfigReader().readConfig("iconPath") + iconName
     }
 
+    /**
+     * Gibt eine Liste mit den verfügbaren Dateiformaten zurück
+     *
+     * @return Liste mit Dateiformaten
+     */
     fun getAvailableFormats(): List<String> {
         return listOf("pdf", "jpg", "png", "exif", "tif")
     }
 
+    /**
+     * Prüft ob Hash von Hostname mit Hash aus der
+     * config.properties (activationkey) überein stimmt
+     * @return
+     */
     fun checkLicence(): Boolean {
         val key = ConfigReader().readConfig("activationkey")
         return key == getHostnameHash()
     }
 
-
-    fun getHostnameHash(): String? {
-
-        //https://hashgenerator.de
+    /**
+     * Generiert SHA-256 Hash aus Hostname des PCs
+     *
+     * @return
+     */
+    private fun getHostnameHash(): String? {
+        // https://hashgenerator.de
         try {
             var hostname = InetAddress.getLocalHost().hostName
             val bytes = MessageDigest
                 .getInstance("SHA-256")
                 .digest(hostname.toByteArray())
-            return bytesToHex(bytes)
+
+            val bytesToHex = bytesToHex(bytes)
+            return bytesToHex
         } catch (E: Exception) {
             System.err.println("System Name Exp : " + E.message)
         }
         return ""
     }
 
-
+    /**
+     * Wandelt ByteArray in Hex-String um (Für Hash-generierung)
+     *
+     * @param hash
+     * @return
+     */
     private fun bytesToHex(hash: ByteArray): String? {
         val hexString = StringBuilder(2 * hash.size)
         for (i in hash.indices) {

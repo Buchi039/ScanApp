@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
 import tornadofx.*
+import kotlin.math.ceil
 
 
 class MainView : View() {
@@ -33,17 +34,22 @@ class MainView : View() {
 
     override var root: Parent = vbox() {}
 
+    // maximale Anzahl an Buttons in einer Reihe
+    val maxButtonColumns = 8
+
     private var buttonList = mutableListOf<Button>()
 
     /**
      *  Baut Oberfäche der MainView
      */
     init {
-
+        // Prüfen ob Software auf dem PC aktiviert ist. Wenn nicht -> Fenster mit Nachricht
         if (!mainController.checkLicence()) {
             root.add(vbox {
                 minWidth = 250.0
+                maxWidth = minWidth
                 minHeight = 50.0
+                maxHeight = minHeight
                 text {
                     text = "Software nicht aktiviert"
                     font = Font.font(20.0)
@@ -62,9 +68,6 @@ class MainView : View() {
                     item("Admin").action {
                         println("admin pressed")
                         adminView.openWindow()
-                    }
-                    item("Refresh").action {
-                        refreshView()
                     }
                     item("Beenden").action {
                         close()
@@ -91,6 +94,7 @@ class MainView : View() {
             }
 
             root.add(borderPane)
+            refreshView()
         }
     }
 
@@ -106,8 +110,8 @@ class MainView : View() {
             alignment = Pos.CENTER
         }
         val user = userController.getDefaultUser()
-
-        val maxCols = 8     // Anzahl der maximalen Spalten
+        buttonList.clear()
+        val maxCols = maxButtonColumns     // Anzahl der maximalen Spalten
         var rIndex = 1      // Index der Reihen Position
         var cIndex = 1      // Index der Spaltenposition
         if (user != null) {
@@ -268,22 +272,28 @@ class MainView : View() {
     }
 
     fun refreshView() {
-        return
+
 
         val genScanButtonGridpane = genScanButtonGridpane()
         borderPane.center = genScanButtonGridpane
         borderPane.center.autosize()
 
+        val buttonCount = buttonList.size
+        val rowCount = ceil(buttonCount.toDouble() / maxButtonColumns)
+        println("buttonc: $buttonCount rwoCount: $rowCount")
 
-        if (borderPane.minWidth > genScanButtonGridpane.columnCount * 100.0)
+
+        var columnCount = if (rowCount > 1)
+            maxButtonColumns
+        else
+            buttonCount
+
+        if (borderPane.minWidth > columnCount * 110.0)
             primaryStage.minWidth = borderPane.minWidth
         else
-            primaryStage.minWidth = genScanButtonGridpane.columnCount * 100.0
+            primaryStage.minWidth = (columnCount * 110.0) + 100.0
 
-
-        primaryStage.minHeight = (genScanButtonGridpane.rowCount * 100.0) + 70.0
-        // primaryStage.minWidth = genScanButtonGridpane.columnCount * 100.0
-
+        primaryStage.minHeight = (rowCount * 110.0) + 160
         primaryStage.maxWidth = primaryStage.minWidth
         primaryStage.maxHeight = primaryStage.minHeight
     }
