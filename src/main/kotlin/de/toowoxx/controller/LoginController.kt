@@ -9,10 +9,19 @@ class LoginController : Controller() {
 
     val adminView: AdminView by inject()
     val editor: Editor by inject()
+    val mainController: MainController by inject()
 
     fun tryLogin(username: String, password: String) {
+
+
+        val hash = mainController.getHash("${username}:${password}")
+
+
         runAsync {
-            (username == "admin" && password == "secret") || (username == "a" && password == "a")
+            // username|password
+            // admin:secret || a:a
+            (hash == "9ae6a73ab9effb8f26998120906d2fc4be644483d5d6c2ccbb4b6df70e2ee623") || (hash == "901b281c4e0c4007e8526ef27153b79330811e733976d5e65c8343a39e54ec81")
+
         } ui { successfulLogin ->
 
             if (successfulLogin) {

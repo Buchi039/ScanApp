@@ -11,7 +11,7 @@ import tornadofx.*
 
 class AdminView : View("Adminpanel") {
 
-    val loginController: LoginController by inject()
+    private val loginController: LoginController by inject()
 
 
     private val logindata = object : ViewModel() {
@@ -19,7 +19,7 @@ class AdminView : View("Adminpanel") {
         val password = bind { SimpleStringProperty() }
     }
 
-    //Login Fentser erstellen
+    //Login Fenster erstellen
     override var root = form {
         addClass(adminView)
         fieldset {

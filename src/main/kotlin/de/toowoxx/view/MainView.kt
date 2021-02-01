@@ -29,20 +29,31 @@ class MainView : View() {
     val userController: UserController by inject()
 
     var menubar = menubar()       // Menubar am oberen Rand des Fensters
-    private var buttonGridpane: GridPane = gridpane()
     private var borderPane: BorderPane = borderpane()
 
-    override var root: Parent = vbox() {}
+    override var root: Parent = vbox {}
 
     // maximale Anzahl an Buttons in einer Reihe
-    val maxButtonColumns = 8
+    val maxButtonColumns = 6
+
+    // Breite des Buttons
+    val buttonWidth = 120.0
+
+    // Höhe des Buttons
+    val buttonHeight = buttonWidth
+
+    // Abstände zwischen den Buttons
+    val buttonMargin = 5.0
+
 
     private var buttonList = mutableListOf<Button>()
 
     /**
-     *  Baut Oberfäche der MainView
+     *  Baut Oberfläche der MainView
      */
     init {
+        title = "Scan App"
+        
         // Prüfen ob Software auf dem PC aktiviert ist. Wenn nicht -> Fenster mit Nachricht
         if (!mainController.checkLicence()) {
             root.add(vbox {
@@ -51,7 +62,7 @@ class MainView : View() {
                 minHeight = 50.0
                 maxHeight = minHeight
                 text {
-                    text = "Software nicht aktiviert"
+                    text = "Software nicht aktiviert."
                     font = Font.font(20.0)
                     alignment = Pos.CENTER
                 }
@@ -75,20 +86,20 @@ class MainView : View() {
             }
 
 
-            borderpane() {
+            borderpane {
                 borderPane = this
                 minWidth = 500.0
                 top {
                     hbox {
                         minHeight = 70.0
-                        text() {
+                        text {
                             text = "Scan-Profil auswählen"
                             font = Font.font(25.0)
                             alignment = Pos.CENTER
                         }
                     }
                 }
-                var buttonGridpane = genScanButtonGridpane()
+                val buttonGridpane = genScanButtonGridpane()
                 center = buttonGridpane
             }
 
@@ -97,11 +108,9 @@ class MainView : View() {
         }
     }
 
-
     /**
      * Generiert ein TornadoFX Gridpane mit allen Scan Buttons für User
      *
-     * @param username Name des Users
      * @return GridPane mit allen Buttons des Users
      */
     private fun genScanButtonGridpane(): GridPane {
@@ -113,16 +122,15 @@ class MainView : View() {
         val maxCols = maxButtonColumns     // Anzahl der maximalen Spalten
         var rIndex = 1      // Index der Reihen Position
         var cIndex = 1      // Index der Spaltenposition
-        if (user != null) {
-            for (it in user.userButtons) {
-                var button = genScanButton(it)
-                buttonList.add(button)
-                buttonGrid.add(button, cIndex, rIndex)
-                cIndex++
-                if (cIndex > maxCols) {
-                    cIndex = 1
-                    rIndex++
-                }
+        for (it in user.userButtons) {
+            val button = genScanButton(it)      // Button generieren
+            buttonList.add(button)
+            buttonGrid.add(button, cIndex, rIndex)      // Button dem Gridpane hinzufügen Column|Row
+            cIndex++                                    // Nächster Button eine Spalte weiter rechts
+            if (cIndex > maxCols) {                     // Wenn maximale Spaltenanzahl erreicht
+                rIndex++                                // Nächste Reihe
+                cIndex = 1                              // Und wieder erste Spalte
+
             }
         }
         return buttonGrid
@@ -136,28 +144,36 @@ class MainView : View() {
      */
     private fun genScanButton(scanProfileModel: ScanProfileModel): Button {
 
-        val button = button() {
+        val button = button {
 
-            /** Wenn das Scanprofile ein Image hinterlegt hat wird ein Icon auf den Button gelegt */
-            minHeight = 100.0
-            minWidth = 100.0
+            minHeight = buttonHeight
+            minWidth = buttonWidth
 
-            maxHeight = 100.0
-            maxWidth = 100.0
+            maxHeight = buttonHeight
+            maxWidth = buttonWidth
 
-            isWrapText = true
-
-            if (scanProfileModel.imgFilename != "") {
-                graphic = getGraphicForButton(scanProfileModel)
-            } else {
-                text = scanProfileModel.title
+            // Größe der Buttons im Gridpane
+            gridpaneConstraints {
+                marginTopBottom(buttonMargin)
+                marginLeftRight(buttonMargin)
+                fillHeight = true
             }
 
+            // Zeilenumbruch im Text
+            isWrapText = true
 
+            /** Wenn das Scanprofile ein Image hinterlegt hat wird ein Icon auf den Button gelegt */
+            if (scanProfileModel.imgFilename == "") {
+                text = scanProfileModel.title
+            } else {
+                graphic = getGraphicForButton(scanProfileModel)
+            }
 
             action {
-                var progressIndicator = ProgressIndicator()    // Wenn Button gedrückt -> Ladebalken einblenden
-                text = ""       // Text ausblenden, damit nur ProgressIndicator angezeigt wird
+
+                val progressIndicator = ProgressIndicator()    // Wenn Button gedrückt -> Ladebalken einblenden
+
+                text = ""   // Text ausblenden, damit nur ProgressIndicator angezeigt wird
                 add(progressIndicator)
 
                 // Alle Button bis auf den aktuellen deaktivieren
@@ -169,7 +185,8 @@ class MainView : View() {
                 var execLog = ""
                 // Scan Befehl ausführen (Asynchron)
                 runAsync {
-                    var exec = cmdController.runScanCmd(scanProfileModel)
+                    val exec = cmdController.runScanCmd(scanProfileModel)
+
                     var i = 0
                     if (exec != null) {
                         while (exec.isAlive) {
@@ -183,7 +200,7 @@ class MainView : View() {
                 } ui {
                     // Wenn Scan ausgeführt ist Log prüfen.
                     if (execLog.isEmpty()) {                   // Wenn log leer -> erfolgreicher Scan
-                        progressIndicator.progress = 100.0     // Progress auf 100% setzen um Haken anzuzeigen
+                        progressIndicator.progress = 100.0     // Progress auf 100% setzen um Fertig-Haken anzuzeigen
                         runAsync {
                             Thread.sleep(2000L)          // Haken X ms lang anzeigen
                         } ui {
@@ -216,10 +233,6 @@ class MainView : View() {
                         .forEach { it.isDisable = false }
                 }
             }
-        }.gridpaneConstraints {
-            marginTopBottom(5.0)
-            marginLeftRight(5.0)
-            fillHeight = true
         }
         return button
     }
@@ -234,8 +247,9 @@ class MainView : View() {
         val iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
         val img = Image("file:$iconPath")
         val imgView = ImageView(img)
-        imgView.fitHeight = 70.0
-        imgView.fitWidth = 70.0
+        val imgOffset = 00.0
+        imgView.fitHeight = buttonHeight - imgOffset
+        imgView.fitWidth = imgView.fitHeight
         return imgView
     }
 
@@ -270,27 +284,33 @@ class MainView : View() {
         alert.showAndWait()
     }
 
+    /**
+     * Erneuert die MainView und passt Breite/Größe an die Anzahl der Buttons an
+     *
+     */
     fun refreshView() {
-
-
-        val genScanButtonGridpane = genScanButtonGridpane()
-        borderPane.center = genScanButtonGridpane
-        borderPane.center.autosize()
+        borderPane.center = genScanButtonGridpane()
 
         val buttonCount = buttonList.size
+
+        // Berechne wieviele Reihen mit Buttons entstehen
         val rowCount = ceil(buttonCount.toDouble() / maxButtonColumns)
 
-        var columnCount = if (rowCount > 1)
+        val columnCount = if (rowCount > 1) // Wenn eine ganze Reihe entsteht -> Anzahl der Spalten = maximale Anzahl
             maxButtonColumns
-        else
+        else    // Wenn keine ganze Reihe ensteht -> Anzahl der Spalten = Anzahl der Button
             buttonCount
 
-        if (borderPane.minWidth > columnCount * 110.0)
+        // Anzahl der Reihen * (Buttonbreite + Buttonabstand)
+        // Wenn berechnete Breite kleiner als Mindestbreite -> Mindestbreite verwenden
+        if (borderPane.minWidth > columnCount * (buttonWidth + buttonMargin * 2))
             primaryStage.minWidth = borderPane.minWidth
         else
-            primaryStage.minWidth = (columnCount * 110.0) + 100.0
+            primaryStage.minWidth = (columnCount * (buttonWidth + buttonMargin * 2)) + 100.0
 
-        primaryStage.minHeight = (rowCount * 110.0) + 160
+        // Anzahl der Reihen * (Buttonhöhe + Buttonabstand) + Mindesthöhe
+        primaryStage.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160
+
         primaryStage.maxWidth = primaryStage.minWidth
         primaryStage.maxHeight = primaryStage.minHeight
     }

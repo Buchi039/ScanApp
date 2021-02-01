@@ -23,7 +23,6 @@ class CommandController : Controller() {
         /** TODO löschen */
         if (System.getProperty("os.name") == "Mac OS X") {
             return runTestCmd()
-
         }
 
         val dateTimeFormatter = DateTimeFormatter
@@ -42,6 +41,7 @@ class CommandController : Controller() {
     }
 
     fun runTestCmd(): Process? {
+        Thread.sleep(5000L)
         return Runtime.getRuntime().exec("cd ..")
     }
 
@@ -68,7 +68,7 @@ class CommandController : Controller() {
         val reader = BufferedReader(InputStreamReader(stdInput))
 
         var output = ""
-        var line: String? = null
+        var line: String?
         while (reader.readLine().also { line = it } != null) {
 
             output += "$line\n\r"

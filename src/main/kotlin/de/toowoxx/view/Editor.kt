@@ -39,7 +39,7 @@ class Editor : View("Editor") {
     var iconField: Field by singleAssign()
 
     val iconCheckboxProperty = SimpleBooleanProperty()
-    var directoryChooser: DirectoryChooser by singleAssign()
+    // var directoryChooser: DirectoryChooser by singleAssign()
 
     override val root = hbox()
 
@@ -56,17 +56,19 @@ class Editor : View("Editor") {
              * */
             borderpane {
                 center {
+                    minWidth = 400.0
                     tableview(scanProfileList) {
                         scanProfileTable = this
 
                         column("Titel", ScanProfileModel::titleProperty) {
-                            prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
-
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(45 / 100.0))
                         }
                         column("NAPS", ScanProfileModel::napsProfileProperty) {
-                            prefWidthProperty().bind(scanProfileTable.widthProperty().divide(2))
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(40 / 100.0))
                         }
-
+                        column("Format", ScanProfileModel::scanFormatProperty) {
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(15 / 100.0))
+                        }
 
                         selectionModel.selectedItemProperty().onChange {
                             editScanProfile(it)
@@ -76,7 +78,7 @@ class Editor : View("Editor") {
                 }
                 bottom {
                     hbox {
-                        button("Neuer Scanbutton") {
+                        button("Neues Scanprofil") {
                             action {
                                 newScanProfile()
                             }
@@ -125,17 +127,14 @@ class Editor : View("Editor") {
                                     scanProfileNAPSCombo = this
                                     items = ConfigReader().readNAPSProfiles().asObservable()
                                     prefWidth = 190.0
-
                                 }
 
                                 combobox<String> {
                                     scanProfileFormatCombo = this
                                     items = mainController.getAvailableFormats().asObservable()
                                     prefWidth = 70.0
-
                                 }
                             }
-
 
                             /** Feld mit den Einstellungen für den Speicherort */
                             field("Pfad") {
@@ -146,9 +145,9 @@ class Editor : View("Editor") {
                                 /** DirectoryChooser für Auswahl des Speicherorts */
                                 button("Wählen") {
                                     action {
-                                        directoryChooser = DirectoryChooser()
-                                        directoryChooser.initialDirectory = File(System.getProperty("user.home"))
-                                        val showDialog = directoryChooser.showDialog(primaryStage)
+                                        var dirChooser = DirectoryChooser()
+                                        dirChooser.initialDirectory = File(System.getProperty("user.home"))
+                                        val showDialog = dirChooser.showDialog(primaryStage)
                                         if (showDialog != null)
                                             scanProfileScanPathField.text = showDialog.absolutePath
                                     }
@@ -167,7 +166,7 @@ class Editor : View("Editor") {
                                             iconField.show()
                                         else {
                                             iconField.hide()
-                                            scanProfileImgCombobox.value = "" //Wenn Haken entfernt IMG Path leeren
+                                            scanProfileImgCombobox.value = "" // Wenn Haken entfernt IMG Path leeren
                                         }
                                     }
                                 }

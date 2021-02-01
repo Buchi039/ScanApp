@@ -40,7 +40,7 @@ class MainController : Controller() {
      * @return Liste mit Dateiformaten
      */
     fun getAvailableFormats(): List<String> {
-        return listOf("pdf", "jpg", "png", "exif", "tif")
+        return listOf("pdf", "bmp", "emf", "exif", "gif", "jpg", "png", "tif")
     }
 
     /**
@@ -62,16 +62,19 @@ class MainController : Controller() {
         // https://hashgenerator.de
         try {
             var hostname = InetAddress.getLocalHost().hostName
-            val bytes = MessageDigest
-                .getInstance("SHA-256")
-                .digest(hostname.toByteArray())
-
-            val bytesToHex = bytesToHex(bytes)
-            return bytesToHex
+            return getHash(hostname)
         } catch (E: Exception) {
             System.err.println("System Name Exp : " + E.message)
         }
         return ""
+    }
+
+    fun getHash(text: String): String? {
+        val bytes = MessageDigest
+            .getInstance("SHA-256")
+            .digest(text.toByteArray())
+
+        return bytesToHex(bytes)
     }
 
     /**
