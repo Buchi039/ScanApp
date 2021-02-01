@@ -6,7 +6,7 @@
       <Name>HP7F228E (HP Officejet Pro 8620)</Name>
     </Device>
     <DriverName>wia</DriverName>
-    <DisplayName>Dummy Profil 1</DisplayName>
+    <DisplayName>Flachbett A4</DisplayName>
     <IconID>0</IconID>
     <MaxQuality>false</MaxQuality>
     <IsDefault>true</IsDefault>
@@ -18,7 +18,7 @@
     <BitDepth>C24Bit</BitDepth>
     <PageAlign>Right</PageAlign>
     <PageSize>A4</PageSize>
-    <Resolution>Dpi200</Resolution>
+    <Resolution>Dpi1200</Resolution>
     <PaperSource>Glass</PaperSource>
     <EnableAutoSave>false</EnableAutoSave>
     <Quality>75</Quality>
@@ -43,7 +43,7 @@
       <Name>HP7F228E (HP Officejet Pro 8620)</Name>
     </Device>
     <DriverName>wia</DriverName>
-    <DisplayName>Dummy Profil 2</DisplayName>
+    <DisplayName>Einzug A4</DisplayName>
     <IconID>0</IconID>
     <MaxQuality>false</MaxQuality>
     <IsDefault>false</IsDefault>
