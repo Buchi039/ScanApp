@@ -14,7 +14,7 @@ import java.io.File
 
 class UserController : Controller() {
 
-    private val path = ConfigReader().readConfig("userConfigPath")
+    private val path = ConfigReader().readConfig("scanAppProfiles")
     var userList = observableListOf<UserModel>()
 
     fun saveUsersToJson(users: MutableList<UserModelJson>) {
@@ -51,17 +51,10 @@ class UserController : Controller() {
         return getUserById(1)
     }
 
-    fun generateDummyUsers(): MutableList<UserModelJson> {
+    fun generateDummy(): MutableList<UserModelJson> {
 
-        val button1 = ScanProfileJson(1, "Profil1", "Profil1", "", System.getProperty("user.home"), "pdf")
-        val button2 = ScanProfileJson(2, "Profil2", "Profil2", "", System.getProperty("user.home"), "pdf")
-        val button3 =
-            ScanProfileJson(3, "Profil3", "Profil3", "", System.getProperty("user.home"), "jpg")
-
-
-        var buttonList = mutableListOf(button1, button2, button3)
-        val user = UserModelJson(1, "Max", buttonList)
-
+        var buttonList = mutableListOf<ScanProfileJson>()
+        val user = UserModelJson(1, "default", buttonList)
 
         return mutableListOf(user)
     }

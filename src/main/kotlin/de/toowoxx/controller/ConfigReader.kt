@@ -1,3 +1,4 @@
+import org.json.JSONException
 import org.json.JSONObject
 import org.json.XML
 import java.io.File
@@ -42,12 +43,21 @@ class ConfigReader {
             val xmlStr = xmlFile.readText()
             val jsonObj = XML.toJSONObject(xmlStr)
 
-            var arrayOfScanProfile = jsonObj.getJSONObject("ArrayOfScanProfile").getJSONArray("ScanProfile")
-            val displayNames = mutableListOf<String>()
-            arrayOfScanProfile.forEach { profile ->
-                displayNames.add(JSONObject(profile.toString()).getString("DisplayName"))
+            var arrayOfScanProfile = jsonObj.getJSONObject("ArrayOfScanProfile")
+            try {
+                val displayNames = mutableListOf<String>()
+
+                var scanProfiles = arrayOfScanProfile.getJSONArray("ScanProfile")
+                scanProfiles.forEach { profile ->
+                    displayNames.add(JSONObject(profile.toString()).getString("DisplayName"))
+                }
+                return displayNames
+            } catch (ex: JSONException) {
+                val displayNames = mutableListOf<String>()
+                var scanProfile = arrayOfScanProfile.getJSONObject("ScanProfile")
+                displayNames.add(JSONObject(scanProfile.toString()).getString("DisplayName"))
+                return displayNames
             }
-            return displayNames
         } else
             return listOf()
 

@@ -1,6 +1,7 @@
 package de.toowoxx.controller
 
 import ConfigReader
+import javafx.scene.image.Image
 import tornadofx.Controller
 import java.io.File
 import java.net.InetAddress
@@ -94,5 +95,16 @@ class MainController : Controller() {
         }
         return hexString.toString()
 
+    }
+
+    /**
+     * Lädt das Icon für die App
+     *
+     * @return Image
+     */
+    fun getAppImage(): Image {
+        val inputStream = this::class.java.getResourceAsStream("/icon_print.png")
+        var img = Image(inputStream)
+        return img
     }
 }

@@ -19,8 +19,8 @@ class LoginController : Controller() {
 
         runAsync {
             // username|password
-            // admin:secret || a:a
-            (hash == "9ae6a73ab9effb8f26998120906d2fc4be644483d5d6c2ccbb4b6df70e2ee623") || (hash == "901b281c4e0c4007e8526ef27153b79330811e733976d5e65c8343a39e54ec81")
+            // admin:secret!
+            (hash == "c7a7904021ef433b756fed358166d963eaa5b6b44e3964b00d0de073369d2050")
 
         } ui { successfulLogin ->
 

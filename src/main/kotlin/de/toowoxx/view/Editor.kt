@@ -132,7 +132,7 @@ class Editor : View("Editor") {
                                 combobox<String> {
                                     scanProfileFormatCombo = this
                                     items = mainController.getAvailableFormats().asObservable()
-                                    prefWidth = 70.0
+                                    prefWidth = 80.0
                                 }
                             }
 

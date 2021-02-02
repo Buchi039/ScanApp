@@ -9,7 +9,7 @@ import javafx.event.EventHandler
 import javafx.util.Duration
 import tornadofx.*
 
-class AdminView : View("Adminpanel") {
+class AdminView : View("Login") {
 
     private val loginController: LoginController by inject()
 

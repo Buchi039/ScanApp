@@ -22,28 +22,27 @@ import kotlin.math.ceil
 
 class MainView : View() {
 
-    val adminView: AdminView by inject()
+    private val adminView: AdminView by inject()
 
-    private val mainController: MainController by inject()
-    private val cmdController: CommandController by inject()
-    val userController: UserController by inject()
+    private val mainCtrl: MainController by inject()
+    private val cmdCtrl: CommandController by inject()
+    private val userCtrl: UserController by inject()
 
-    var menubar = menubar()       // Menubar am oberen Rand des Fensters
     private var borderPane: BorderPane = borderpane()
 
     override var root: Parent = vbox {}
 
     // maximale Anzahl an Buttons in einer Reihe
-    val maxButtonColumns = 6
+    private val maxButtonColumns = 6
 
     // Breite des Buttons
-    val buttonWidth = 120.0
+    private val buttonWidth = 140.0
 
     // Höhe des Buttons
-    val buttonHeight = buttonWidth
+    private val buttonHeight = buttonWidth
 
     // Abstände zwischen den Buttons
-    val buttonMargin = 5.0
+    private val buttonMargin = 5.0
 
 
     private var buttonList = mutableListOf<Button>()
@@ -53,9 +52,12 @@ class MainView : View() {
      */
     init {
         title = "Scan App"
-        
+
+        // Setzt das Icon der Anwendung
+        FX.primaryStage.icons += mainCtrl.getAppImage()
+
         // Prüfen ob Software auf dem PC aktiviert ist. Wenn nicht -> Fenster mit Nachricht
-        if (!mainController.checkLicence()) {
+        if (!mainCtrl.checkLicence()) {
             root.add(vbox {
                 minWidth = 250.0
                 maxWidth = minWidth
@@ -70,11 +72,10 @@ class MainView : View() {
         } else {
 
             //UserController initiieren
-            userController.init()
+            userCtrl.init()
 
             //Menubar -> Leiste am oberen Rand des Fensters
             menubar {
-                menubar = this
                 menu("Bearbeiten") {
                     item("Admin").action {
                         adminView.openWindow()
@@ -108,6 +109,7 @@ class MainView : View() {
         }
     }
 
+
     /**
      * Generiert ein TornadoFX Gridpane mit allen Scan Buttons für User
      *
@@ -117,7 +119,7 @@ class MainView : View() {
         val buttonGrid = gridpane() {
             alignment = Pos.CENTER
         }
-        val user = userController.getDefaultUser()
+        val user = userCtrl.getDefaultUser()
         buttonList.clear()
         val maxCols = maxButtonColumns     // Anzahl der maximalen Spalten
         var rIndex = 1      // Index der Reihen Position
@@ -185,7 +187,7 @@ class MainView : View() {
                 var execLog = ""
                 // Scan Befehl ausführen (Asynchron)
                 runAsync {
-                    val exec = cmdController.runScanCmd(scanProfileModel)
+                    val exec = cmdCtrl.runScanCmd(scanProfileModel)
 
                     var i = 0
                     if (exec != null) {
@@ -195,7 +197,7 @@ class MainView : View() {
                             i++
                         }
                         // Scan erzeugt bei Fehler einen Log
-                        execLog = cmdController.getExecLog(exec.inputStream)
+                        execLog = cmdCtrl.getExecLog(exec.inputStream)
                     }
                 } ui {
                     // Wenn Scan ausgeführt ist Log prüfen.
@@ -244,11 +246,11 @@ class MainView : View() {
      * @return ImageView der Graphic
      */
     private fun getGraphicForButton(scanProfileModel: ScanProfileModel): ImageView {
-        val iconPath = mainController.getIconPath(scanProfileModel.imgFilename)
+        val iconPath = mainCtrl.getIconPath(scanProfileModel.imgFilename)
         val img = Image("file:$iconPath")
         val imgView = ImageView(img)
-        val imgOffset = 00.0
-        imgView.fitHeight = buttonHeight - imgOffset
+        val imgMargin = 20.0
+        imgView.fitHeight = buttonHeight - imgMargin
         imgView.fitWidth = imgView.fitHeight
         return imgView
     }
