@@ -8,7 +8,7 @@ fun main() {
     val uc = UserController()
     uc.init()
     if (uc.userList.isEmpty()) {
-        UserController().saveUsersToJson(UserController().generateDummy())
+        uc.saveUsersToJson(uc.generateDummy())
     }
     launch<MyApp>()
 }

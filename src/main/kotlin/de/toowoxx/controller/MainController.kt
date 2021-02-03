@@ -104,7 +104,6 @@ class MainController : Controller() {
      */
     fun getAppImage(): Image {
         val inputStream = this::class.java.getResourceAsStream("/icon_print.png")
-        var img = Image(inputStream)
-        return img
+        return Image(inputStream)
     }
 }

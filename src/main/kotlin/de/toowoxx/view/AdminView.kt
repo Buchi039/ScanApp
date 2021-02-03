@@ -19,7 +19,7 @@ class AdminView : View("Login") {
         val password = bind { SimpleStringProperty() }
     }
 
-    //Login Fenster erstellen
+    // Login Fenster erstellen
     override var root = form {
         addClass(adminView)
         fieldset {

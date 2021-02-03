@@ -17,6 +17,11 @@ class UserController : Controller() {
     private val path = ConfigReader().readConfig("scanAppProfiles")
     var userList = observableListOf<UserModel>()
 
+    /**
+     * Speichert die Liste der User im JSON-File ab
+     *
+     * @param users
+     */
     fun saveUsersToJson(users: MutableList<UserModelJson>) {
 
         val file = File(path)
@@ -24,6 +29,12 @@ class UserController : Controller() {
         file.writeText(usersJson)
     }
 
+    /**
+     * Lädt alle gespeicherten User aus dem JSON File
+     *
+     * @param filePath
+     * @return Liste mit UserModel
+     */
     private fun loadUsersFromJson(filePath: String = path): List<UserModel> {
 
         val gson = Gson()
@@ -38,7 +49,12 @@ class UserController : Controller() {
             listOf()
     }
 
-
+    /**
+     * Gibt User anhand der ID zurück
+     *
+     * @param userId
+     * @return User mit ID userId
+     */
     fun getUserById(userId: Int): UserModel {
         for (user in userList) {
             if (user.id == userId)
@@ -47,10 +63,20 @@ class UserController : Controller() {
         return UserModel()
     }
 
+    /**
+     * Gibt den default User zurück (ID = 1)
+     *
+     * @return
+     */
     fun getDefaultUser(): UserModel {
         return getUserById(1)
     }
 
+    /**
+     * Erstellt den default User (Wird benutzt beim ersten Start der Anwendung)
+     *
+     * @return L
+     */
     fun generateDummy(): MutableList<UserModelJson> {
 
         var buttonList = mutableListOf<ScanProfileJson>()
@@ -59,7 +85,12 @@ class UserController : Controller() {
         return mutableListOf(user)
     }
 
-
+    /**
+     * Wandelt die User aus dem TornadoFX (Properties) Format in JSON um
+     *
+     * @param list
+     * @return
+     */
     fun dataToJsonData(list: ObservableList<UserModel>): MutableList<UserModelJson> {
 
         val userJson = mutableListOf<UserModelJson>()
@@ -69,6 +100,12 @@ class UserController : Controller() {
         return userJson
     }
 
+    /**
+     * Wandelt die User vom JSON Format in das TornadoFX Format (Porperties)
+     *
+     * @param list
+     * @return
+     */
     private fun jsonDataToData(list: List<UserModelJson>): ObservableList<UserModel> {
 
         val userModelList = observableListOf<UserModel>()
@@ -78,6 +115,10 @@ class UserController : Controller() {
         return userModelList
     }
 
+    /**
+     * Initialisiert die gespeicherten Daten
+     *
+     */
     fun init() {
         userList = loadUsersFromJson(path).asObservable()
     }

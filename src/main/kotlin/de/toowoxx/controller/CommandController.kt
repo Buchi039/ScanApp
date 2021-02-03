@@ -20,11 +20,7 @@ class CommandController : Controller() {
      */
     fun runScanCmd(model: ScanProfileModel): Process? {
 
-        /** TODO löschen */
-        if (System.getProperty("os.name") == "Mac OS X") {
-            return runTestCmd()
-        }
-
+        // Datums String erstellen für Scan Dateiname
         val dateTimeFormatter = DateTimeFormatter
             .ofPattern("ddMMyy_HHmmss")
             .withZone(ZoneId.systemDefault())
@@ -63,6 +59,12 @@ class CommandController : Controller() {
         return "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\""
     }
 
+    /**
+     * Liest den Consolelog aus, nachdem der CMD ausgeführt wurde
+     *
+     * @param stdInput
+     * @return
+     */
     fun getExecLog(stdInput: InputStream): String {
 
         val reader = BufferedReader(InputStreamReader(stdInput))

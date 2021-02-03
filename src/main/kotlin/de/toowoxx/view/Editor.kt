@@ -49,11 +49,11 @@ class Editor : View("Editor") {
         with(root) {
             minHeight = 510.0
 
-            /** Spalte 1 mit Auswahl des Scanprofils von User
+            /** Spalte 1 mit Auswahl der Scanprofile
              * * Besteht aus Borderpane
              * Center -> Tabelview mit ScanProfiles
              * Bottom -> Buttons zum Neu erstellen / löschen
-             * */
+             */
             borderpane {
                 center {
                     minWidth = 400.0
@@ -107,7 +107,7 @@ class Editor : View("Editor") {
                 paddingAll = 15
             }
 
-            /** Spalte 2 mit Feldern zum editieren der Userdaten und Scanprofil Daten
+            /** Spalte 2 mit Feldern zum editieren der Scanprofil Daten
              * Center -> Felder zum editieren der Daten
              * Bottom -> Button zum speicher der Daten
              */
