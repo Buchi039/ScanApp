@@ -35,7 +35,7 @@ class ConfigReader {
      */
     fun readNAPSProfiles(): List<String> {
 
-        val napsPath = readConfig("napsPath")
+        val napsPath = readConfig("helperPath")
 
         // Pfad zu dem XML File, in dem die Profile von NAPS2 gespeichert sind
         val xmlFilePath = "$napsPath/Data/profiles.xml"

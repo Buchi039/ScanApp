@@ -1,0 +1,84 @@
+2021-02-12 09:53:06.4379 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+
+2021-02-12 09:53:08.8247 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+
+2021-02-12 09:54:52.2567 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+
+2021-02-12 09:54:53.7781 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+
+2021-02-12 09:55:38.8850 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+
+2021-02-12 09:55:40.3994 An error occurred that caused the task to terminate. System.AggregateException: Ausnahmen einer Aufgabe wurden nicht überwacht (entweder wegen Wartens auf die Aufgabe oder wegen des Zugriffs auf die Ausnahmeeigenschaft. Daher wurde die nicht überwachte Ausnahme vom Finalizer-Thread erneut ausgelöst. ---> System.ComponentModel.Win32Exception: Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()
+   --- Ende der internen Ausnahmestapelüberwachung ---
+---> (Interne Ausnahme #0) System.ComponentModel.Win32Exception (0x80004005): Das System kann die angegebene Datei nicht finden
+   bei System.Diagnostics.Process.StartWithCreateProcess(ProcessStartInfo startInfo)
+   bei System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   bei NAPS2.Worker.WorkerManager.StartWorkerProcess()
+   bei NAPS2.Worker.WorkerManager.<>c.<StartWorkerService>b__8_0()
+   bei System.Threading.Tasks.Task.Execute()<---
+

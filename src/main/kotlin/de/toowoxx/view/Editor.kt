@@ -63,7 +63,7 @@ class Editor : View("Editor") {
                         column("Titel", ScanProfileModel::titleProperty) {
                             prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(45 / 100.0))
                         }
-                        column("NAPS", ScanProfileModel::napsProfileProperty) {
+                        column("Helper", ScanProfileModel::napsProfileProperty) {
                             prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(40 / 100.0))
                         }
                         column("Format", ScanProfileModel::scanFormatProperty) {
@@ -122,7 +122,7 @@ class Editor : View("Editor") {
                                     scanProfileTitleField = this
                                 }
                             }
-                            field("NAPS Profile") {
+                            field("Helper Profile") {
                                 combobox<String> {
                                     scanProfileNAPSCombo = this
                                     items = ConfigReader().readNAPSProfiles().asObservable()

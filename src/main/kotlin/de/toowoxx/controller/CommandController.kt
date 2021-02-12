@@ -27,8 +27,8 @@ class CommandController : Controller() {
             .format(Instant.now())
         val filename = "scan_$dateTimeFormatter.${model.scanFormat}"
 
-        var napsPath = ConfigReader().readConfig("napsPath")
-        napsPath += "\\App\\NAPS2.Console.exe"
+        var napsPath = ConfigReader().readConfig("helperPath")
+        napsPath += "\\App\\helper.Console.exe"
 
 
         val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
