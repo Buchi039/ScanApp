@@ -56,23 +56,52 @@ class Editor : View("Editor") {
              */
             borderpane {
                 center {
-                    minWidth = 400.0
+                    minWidth = 500.0
                     tableview(scanProfileList) {
                         scanProfileTable = this
 
+                        column("Nr", ScanProfileModel::idProperty) {
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(8 / 100.0))
+                        }
+
                         column("Titel", ScanProfileModel::titleProperty) {
-                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(45 / 100.0))
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(36 / 100.0))
                         }
                         column("Helper", ScanProfileModel::napsProfileProperty) {
-                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(40 / 100.0))
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(32 / 100.0))
                         }
                         column("Format", ScanProfileModel::scanFormatProperty) {
-                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(15 / 100.0))
+                            prefWidthProperty().bind(scanProfileTable.widthProperty().multiply(24 / 100.0))
                         }
 
                         selectionModel.selectedItemProperty().onChange {
                             editScanProfile(it)
                             scanButtonFieldset.show()
+                        }
+                    }
+                }
+                left {
+                    vbox {
+                        paddingRight = 10.0
+                        button() {
+                            action {
+                                moveScanProfileUp()
+                            }
+                            val imageViewUp =
+                                ImageView(Image(this::class.java.getResourceAsStream("/arrow_up.png")))
+                            imageViewUp.fitHeight = 10.0
+                            imageViewUp.fitWidth = 10.0
+                            this.graphic = imageViewUp
+                        }
+                        button() {
+                            action {
+                                moveScanProfileDown()
+                            }
+                            val imageViewDown =
+                                ImageView(Image(this::class.java.getResourceAsStream("/arrow_down.png")))
+                            imageViewDown.fitHeight = 10.0
+                            imageViewDown.fitWidth = 10.0
+                            this.graphic = imageViewDown
                         }
                     }
                 }
@@ -226,12 +255,80 @@ class Editor : View("Editor") {
      *
      */
     private fun deleteScanProfile() {
-        val deletedScanButton = scanProfileTable.selectedItem!!
 
+        val deletedScanButton = scanProfileTable.selectedItem!!
         for (profile in scanProfileList) {
             if (profile.id == deletedScanButton.id) {
                 scanProfileList.remove(deletedScanButton)
                 break
+            }
+        }
+
+        scanProfileList.sortBy { it.id }
+        for (i in 0 until scanProfileList.size) {
+            scanProfileList[i].id = i + 1
+        }
+    }
+
+    /**
+     * Schiebt Profil in der Tabelle um einen Eintrag nach oben
+     *
+     */
+    private fun moveScanProfileUp() {
+
+        scanProfileList.sortBy { it.id }
+        val profileToMove = scanProfileTable.selectedItem
+
+        if (profileToMove != null) {
+            for (i in 0 until scanProfileList.size) {
+                if (profileToMove.id == scanProfileList[i].id) {
+                    if (i == 0)
+                        return
+                    else {
+                        val profileId = profileToMove.id
+                        val profileSwitchId = scanProfileList[i - 1].id
+                        // Setzt das Profil in der Liste um 1 nach oben
+                        // Profil welches zuvor an der Stelle war kommt auf den "freien" Platz
+                        scanProfileList[i - 1].id = profileId
+                        scanProfileTable.selectedItem!!.id = profileSwitchId
+
+                        // Liste nach ID sortieren
+                        scanProfileList.sortBy { it.id }
+                        return
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * SChiebt Profil in Tabelle um einen Eintrag nach unten
+     *
+     */
+    private fun moveScanProfileDown() {
+
+        scanProfileList.sortBy { it.id }
+        val profileToMove = scanProfileTable.selectedItem
+
+        if (profileToMove != null) {
+            for (i in 0 until scanProfileList.size) {
+                if (profileToMove.id == scanProfileList[i].id) {
+                    // Profil ist schon ganz unten
+                    if (i == scanProfileList.lastIndex)
+                        return
+                    else {
+                        val profileId = profileToMove.id
+                        val profileSwitchId = scanProfileList[i + 1].id
+                        // Setzt das Profil in der Liste um 1 nach unten
+                        // Profil welches zuvor an der Stelle war kommt auf den "freien" Platz
+                        scanProfileList[i + 1].id = profileId
+                        scanProfileTable.selectedItem!!.id = profileSwitchId
+
+                        // Liste nach ID sortieren
+                        scanProfileList.sortBy { it.id }
+                        return
+                    }
+                }
             }
         }
     }
