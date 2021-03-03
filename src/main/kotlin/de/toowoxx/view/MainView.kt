@@ -4,6 +4,7 @@ import de.toowoxx.controller.CommandController
 import de.toowoxx.controller.MainController
 import de.toowoxx.controller.UserController
 import de.toowoxx.model.ScanProfileModel
+import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.control.Alert
@@ -12,9 +13,8 @@ import javafx.scene.control.ProgressIndicator
 import javafx.scene.control.TextArea
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.Priority
+import javafx.scene.layout.*
+import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
 import kotlin.math.ceil
@@ -46,6 +46,7 @@ class MainView : View() {
 
 
     private var buttonList = mutableListOf<Button>()
+
 
     /**
      *  Baut Oberfläche der MainView
@@ -90,9 +91,29 @@ class MainView : View() {
             borderpane {
                 borderPane = this
                 minWidth = 500.0
+
+                //this.style = "-fx-background-color: #FFFFFF;"
+                background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
+
                 top {
-                    hbox {
+                    vbox {
                         minHeight = 70.0
+
+                        hbox {
+
+                            val imageView =
+                                ImageView(Image(this::class.java.getResourceAsStream("/DAT_Logo_DieSystempartner_RZ_RGB_600dpi.jpg")))
+
+                            imageView.fitHeight = 100.0
+                            imageView.isPreserveRatio = true
+
+                            alignment = Pos.CENTER
+                            paddingTop = 15.0
+                            paddingBottom = 45.0
+                            this.add(imageView)
+
+                        }
+
                         text {
                             text = "Scan-Profil auswählen"
                             font = Font.font(25.0)
@@ -102,6 +123,11 @@ class MainView : View() {
                 }
                 val buttonGridpane = genScanButtonGridpane()
                 center = buttonGridpane
+
+                bottom {
+                    background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
+                }
+
             }
 
             root.add(borderPane)
@@ -118,6 +144,7 @@ class MainView : View() {
     private fun genScanButtonGridpane(): GridPane {
         val buttonGrid = gridpane() {
             alignment = Pos.CENTER
+
         }
         val user = userCtrl.getDefaultUser()
         buttonList.clear()
@@ -310,11 +337,12 @@ class MainView : View() {
         else
             primaryStage.minWidth = (columnCount * (buttonWidth + buttonMargin * 2)) + 100.0
 
-        // Anzahl der Reihen * (Buttonhöhe + Buttonabstand) + Mindesthöhe
-        primaryStage.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160
+        // Anzahl der Reihen * (Buttonhöhe + Buttonabstand) + Mindesthöhe + Logo (Höhe + Padding)
+        primaryStage.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160 + 160.0
 
         primaryStage.maxWidth = primaryStage.minWidth
         primaryStage.maxHeight = primaryStage.minHeight
+
     }
 
 }

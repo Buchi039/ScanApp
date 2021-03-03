@@ -32,7 +32,11 @@ class MainController : Controller() {
      * @return  Pfad zu dem File (iconName)
      */
     fun getIconPath(iconName: String): String {
-        return ConfigReader().readConfig("iconPath") + iconName
+        var iconPathConf = ConfigReader().readConfig("iconPath")
+        if (!iconPathConf.endsWith('/')) {
+            iconPathConf += '/'
+        }
+        return iconPathConf + iconName
     }
 
     /**

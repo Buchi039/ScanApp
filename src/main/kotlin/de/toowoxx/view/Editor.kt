@@ -217,6 +217,7 @@ class Editor : View("Editor") {
                                         imageView.fitHeight = 70.0
                                         imageView.fitWidth = 70.0
                                         iconButton.graphic = imageView
+                                        println(iconPath)
                                     }
                                 }
 
