@@ -334,21 +334,21 @@ class MainView : View() {
         // Anzahl der Reihen * (Buttonbreite + Buttonabstand)
         // Wenn berechnete Breite kleiner als Mindestbreite -> Mindestbreite verwenden
         if (borderPane.minWidth > columnCount * (buttonWidth + buttonMargin * 2))
-            primaryStage.minWidth = borderPane.minWidth
+            borderPane.minWidth = borderPane.minWidth
         else
-            primaryStage.minWidth = (columnCount * (buttonWidth + buttonMargin * 2)) + 100.0
+            borderPane.minWidth = (columnCount * (buttonWidth + buttonMargin * 2)) + 100.0
 
         // Anzahl der Reihen * (Buttonhöhe + Buttonabstand) + Mindesthöhe + Logo (Höhe + Padding)
-        primaryStage.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160 + 160.0
+        borderPane.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160 + 160.0
 
-        primaryStage.maxWidth = primaryStage.minWidth
-        primaryStage.maxHeight = primaryStage.minHeight
+        borderPane.maxWidth = borderPane.minWidth
+        borderPane.maxHeight = borderPane.minHeight
 
-        if (borderPane.minWidth < primaryStage.minWidth) {
-            borderPane.minHeight = primaryStage.minHeight
-        } else {
-            primaryStage.minHeight = borderPane.minHeight
-        }
+        primaryStage.minWidth = borderPane.minWidth
+        primaryStage.minHeight = borderPane.minHeight
+
+        primaryStage.maxWidth = borderPane.maxWidth
+        primaryStage.maxHeight = borderPane.maxHeight
 
 
     }
