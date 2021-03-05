@@ -17,6 +17,7 @@ import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
+import java.io.File
 import kotlin.math.ceil
 
 
@@ -102,7 +103,7 @@ class MainView : View() {
                         hbox {
 
                             val imageView =
-                                ImageView(Image(this::class.java.getResourceAsStream("/DAT_Logo_DieSystempartner_RZ_RGB_600dpi.jpg")))
+                                ImageView(Image(this::class.java.getResourceAsStream("${File.separatorChar}diesystempartner_logo.jpg")))
 
                             imageView.fitHeight = 100.0
                             imageView.isPreserveRatio = true

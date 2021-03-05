@@ -33,8 +33,8 @@ class MainController : Controller() {
      */
     fun getIconPath(iconName: String): String {
         var iconPathConf = ConfigReader().readConfig("iconPath")
-        if (!iconPathConf.endsWith('/')) {
-            iconPathConf += '/'
+        if (!iconPathConf.endsWith(File.separatorChar)) {
+            iconPathConf += File.separatorChar
         }
         return iconPathConf + iconName
     }
@@ -107,7 +107,7 @@ class MainController : Controller() {
      * @return Image
      */
     fun getAppImage(): Image {
-        val inputStream = this::class.java.getResourceAsStream("/icon_print.png")
+        val inputStream = this::class.java.getResourceAsStream("${File.separatorChar}icon_print.png")
         return Image(inputStream)
     }
 }
