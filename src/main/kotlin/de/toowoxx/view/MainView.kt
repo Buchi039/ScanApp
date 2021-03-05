@@ -344,8 +344,9 @@ class MainView : View() {
         primaryStage.maxWidth = primaryStage.minWidth
         primaryStage.maxHeight = primaryStage.minHeight
 
-        borderPane.minWidth = primaryStage.minWidth
-        borderPane.minHeight = primaryStage.minHeight
+        if (borderPane.minWidth < primaryStage.minWidth) {
+            borderPane.minHeight = primaryStage.minHeight
+        }
 
 
     }
