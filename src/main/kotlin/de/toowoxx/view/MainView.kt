@@ -132,7 +132,7 @@ class MainView : View() {
             }
 
             root.add(borderPane)
-            refreshView()
+            //refreshView()
         }
     }
 
@@ -143,9 +143,12 @@ class MainView : View() {
      * @return GridPane mit allen Buttons des Users
      */
     private fun genScanButtonGridpane(): GridPane {
+        val padding = 20.0
         val buttonGrid = gridpane() {
             alignment = Pos.CENTER
-
+            paddingBottom = padding
+            paddingLeft = padding
+            paddingRight = padding
         }
         val user = userCtrl.getDefaultUser()
         buttonList.clear()
@@ -339,7 +342,7 @@ class MainView : View() {
             borderPane.minWidth = (columnCount * (buttonWidth + buttonMargin * 2)) + 100.0
 
         // Anzahl der Reihen * (Buttonhöhe + Buttonabstand) + Mindesthöhe + Logo (Höhe + Padding)
-        borderPane.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 160 + 160.0
+        borderPane.minHeight = (rowCount * (buttonHeight + buttonMargin * 2)) + 200 + 160.0
 
         borderPane.maxWidth = borderPane.minWidth
         borderPane.maxHeight = borderPane.minHeight
