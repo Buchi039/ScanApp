@@ -10,7 +10,7 @@ class RegisterScannedPages {
         var randomInt = Random.nextInt()
 
         val url =
-            URL("https://erp-pro.org/fetcher/scanpages.php?data=" + kundenNr + "&z=" + numberOfPages + "&random=" + randomInt)
+            URL("https://erp-pro.org/fetcher/scanpages.php?data=$kundenNr&z=$numberOfPages&random=$randomInt")
         var readedLines = ""
 
         with(url.openConnection() as HttpURLConnection) {
