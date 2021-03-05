@@ -54,7 +54,7 @@ class MainView : View() {
         title = "Scan App"
 
         // Setzt das Icon der Anwendung
-        FX.primaryStage.icons += mainCtrl.getAppImage()
+        FX.primaryStage.icons += mainCtrl.getImageFromResource("icon_print.png")
 
         // Prüfen ob Software auf dem PC aktiviert ist. Wenn nicht -> Fenster mit Nachricht
         if (!mainCtrl.checkLicence()) {
@@ -102,8 +102,9 @@ class MainView : View() {
 
                         hbox {
 
+
                             val imageView =
-                                ImageView(Image(this::class.java.getResourceAsStream("/diesystempartner_logo.jpg")))
+                                ImageView(mainCtrl.getImageFromResource("diesystempartner_logo.jpg"))
 
                             imageView.fitHeight = 100.0
                             imageView.isPreserveRatio = true
@@ -112,6 +113,7 @@ class MainView : View() {
                             paddingTop = 15.0
                             paddingBottom = 45.0
                             this.add(imageView)
+
 
                         }
 
@@ -257,7 +259,24 @@ class MainView : View() {
                         } else
                             text = scanProfileModel.title
 
-                        showErrorAlert(execLog)     // Log in einem Fenster ausgeben
+                        // Prüfen ob im Log die Meldung steht, dass in der Zuführung keine Seiten
+                        // vorhanden sind
+                        if (execLog.contains("keine Seiten")) {
+                            showInfoZufuehrungLeer()  // Alert mit Meldung anzeigen
+                        } else if (execLog.contains("page(s) scanned")) {
+                            var seiten = 0
+                            execLog.lines().forEach { string ->
+                                if (string.contains("page(s) scanned")) {
+                                    seiten = string.replace("[^0-9]".toRegex(), "").toInt()
+                                }
+                            }
+                            println("GESCANNTE SEITEN $seiten")
+                            mainCtrl.addNumberOfScannedPages(seiten)
+                        } else {
+                            showErrorAlert(execLog)     // Log in einem Fenster ausgeben
+                        }
+
+
                     }
 
                     // Alle anderen Button wieder aktivieren
@@ -315,6 +334,17 @@ class MainView : View() {
         alert.dialogPane.isExpanded = true
 
         alert.showAndWait()
+    }
+
+    private fun showInfoZufuehrungLeer() {
+        val alert = Alert(Alert.AlertType.WARNING)
+
+        alert.title = "Fehler beim Scanvorgang"
+        alert.headerText = ""
+        alert.contentText = "Papiereinzug ist leer, bitte legen Sie die Dokumente in den Papiereinzug."
+
+        alert.showAndWait()
+
     }
 
     /**

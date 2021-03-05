@@ -56,7 +56,7 @@ class CommandController : Controller() {
         filename: String,
         profileName: String
     ): String {
-        return "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\""
+        return "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\" --v"
     }
 
     /**

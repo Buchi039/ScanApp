@@ -88,7 +88,8 @@ class Editor : View("Editor") {
                                 moveScanProfileUp()
                             }
                             val imageViewUp =
-                                ImageView(Image(this::class.java.getResourceAsStream("/arrow_up.png")))
+                                ImageView(mainController.getImageFromResource("arrow_up.png"))
+
                             imageViewUp.fitHeight = 10.0
                             imageViewUp.fitWidth = 10.0
                             this.graphic = imageViewUp
@@ -98,7 +99,7 @@ class Editor : View("Editor") {
                                 moveScanProfileDown()
                             }
                             val imageViewDown =
-                                ImageView(Image(this::class.java.getResourceAsStream("/arrow_down.png")))
+                                ImageView(mainController.getImageFromResource("arrow_down.png"))
                             imageViewDown.fitHeight = 10.0
                             imageViewDown.fitWidth = 10.0
                             this.graphic = imageViewDown

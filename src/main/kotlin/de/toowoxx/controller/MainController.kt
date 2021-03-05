@@ -1,6 +1,7 @@
 package de.toowoxx.controller
 
 import ConfigReader
+import RegisterScannedPages
 import javafx.scene.image.Image
 import tornadofx.Controller
 import java.io.File
@@ -106,8 +107,14 @@ class MainController : Controller() {
      *
      * @return Image
      */
-    fun getAppImage(): Image {
-        val inputStream = this::class.java.getResourceAsStream("/icon_print.png")
+    fun getImageFromResource(imageName: String): Image {
+        val inputStream = this::class.java.getResourceAsStream("/$imageName")
         return Image(inputStream)
+    }
+
+
+    fun addNumberOfScannedPages(scannedPages: Int) {
+        val kundenNr = ConfigReader().readConfig("vnr")
+        RegisterScannedPages().register(kundenNr, scannedPages)
     }
 }
