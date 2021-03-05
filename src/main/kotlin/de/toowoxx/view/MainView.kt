@@ -346,6 +346,8 @@ class MainView : View() {
 
         if (borderPane.minWidth < primaryStage.minWidth) {
             borderPane.minHeight = primaryStage.minHeight
+        } else {
+            primaryStage.minHeight = borderPane.minHeight
         }
 
 
