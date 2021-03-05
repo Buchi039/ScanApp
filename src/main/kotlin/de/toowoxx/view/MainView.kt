@@ -44,7 +44,6 @@ class MainView : View() {
     // Abstände zwischen den Buttons
     private val buttonMargin = 5.0
 
-
     private var buttonList = mutableListOf<Button>()
 
 
@@ -89,8 +88,10 @@ class MainView : View() {
 
 
             borderpane {
+
                 borderPane = this
                 minWidth = 500.0
+
 
                 //this.style = "-fx-background-color: #FFFFFF;"
                 background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
@@ -342,6 +343,10 @@ class MainView : View() {
 
         primaryStage.maxWidth = primaryStage.minWidth
         primaryStage.maxHeight = primaryStage.minHeight
+
+        borderPane.minWidth = primaryStage.minWidth
+        borderPane.minHeight = primaryStage.minHeight
+
 
     }
 
