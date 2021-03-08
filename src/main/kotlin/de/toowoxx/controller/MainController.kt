@@ -1,7 +1,6 @@
 package de.toowoxx.controller
 
 import ConfigReader
-import RegisterScannedPages
 import javafx.scene.image.Image
 import tornadofx.Controller
 import java.io.File

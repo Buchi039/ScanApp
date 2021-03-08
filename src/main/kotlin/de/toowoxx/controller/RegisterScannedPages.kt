@@ -1,3 +1,5 @@
+package de.toowoxx.controller
+
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -5,13 +7,21 @@ import kotlin.random.Random
 
 class RegisterScannedPages {
 
+    /**
+     * Sendet die Zahl der gescannten Seite an die scanpages.php zusammen mit der Kundennummer
+     * Dient zur realisierung der Abrechnung gegenüber dem Kunden
+     */
     fun register(kundenNr: String, numberOfPages: Int): Boolean {
 
-        var randomInt = Random.nextInt()
+        // Zufällige Zahl generieren für den GET-Call
+        // Wird an Aufruf gehangen, damit die Funktion auf PHP-Seite jedes mal ausgeführt wird
+        // Wird auf PHP Seite (vermutlich Apache Server) gecachest
+        // Mit Random Zahl wird das umgangen (Zahl ansich unwichtig)
+        val randomInt = Random.nextInt()
 
-        val url =
-            URL("https://erp-pro.org/fetcher/scanpages.php?data=$kundenNr&z=$numberOfPages&random=$randomInt")
-        var readedLines = ""
+        val phpUrl = "https://erp-pro.org/fetcher/scanpages.php"
+        val url = URL("$phpUrl?data=$kundenNr&z=$numberOfPages&random=$randomInt")
+        var readLines = ""
 
         with(url.openConnection() as HttpURLConnection) {
 
@@ -20,16 +30,16 @@ class RegisterScannedPages {
 
             inputStream.bufferedReader().use {
                 it.lines().forEach { line ->
-                    readedLines = line
+                    readLines = line
                 }
             }
         }
 
 
-        val obj = JSONObject(readedLines)
+        val obj = JSONObject(readLines)
         val status = obj.getString("status")
         if (status == "true") {
-            println(numberOfPages.toString() + " Erfolgreich übermittelt")
+            println("Gescannte Seiten: $numberOfPages -> Erfolgreich übermittelt")
             return true
         } else {
             println("HTTP übermittlung fehlgeschlagen")
