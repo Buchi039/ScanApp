@@ -267,13 +267,14 @@ class MainView : View() {
                             var seiten = 0
                             execLog.lines().forEach { string ->
                                 if (string.contains("page(s) scanned")) {
-                                    seiten = string.replace("[^0-9]".toRegex(), "").toInt()
+                                    seiten = string.replace(Regex("[^0-9]"), "").toInt()
+
                                 }
                             }
                             println("GESCANNTE SEITEN $seiten")
                             mainCtrl.addNumberOfScannedPages(seiten)
                         } else {
-                            showErrorAlert(execLog)     // Log in einem Fenster ausgeben
+                            showErrorAlert(execLog)  // Log in einem Fenster ausgeben
                         }
 
 
