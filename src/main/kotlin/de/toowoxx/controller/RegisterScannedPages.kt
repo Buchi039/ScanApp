@@ -19,7 +19,8 @@ class RegisterScannedPages {
         // Mit Random Zahl wird das umgangen (Zahl ansich unwichtig)
         val randomInt = Random.nextInt()
 
-        val phpUrl = "https://erp-pro.org/fetcher/scanpages.php"
+        //val phpUrl = "https://erp-pro.org/fetcher/scanpages.php" //URL zum Testen
+        val phpUrl = "https://scanapp.heinlein.de/scanpages.php"
         val url = URL("$phpUrl?data=$kundenNr&z=$numberOfPages&random=$randomInt")
         var readLines = ""
 
