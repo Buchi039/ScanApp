@@ -17,7 +17,12 @@ import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
+import kotlin.time.TimeSource
 
 
 class MainView : View() {
@@ -216,25 +221,38 @@ class MainView : View() {
                     .filter { it != this }
                     .forEach { it.isDisable = true }
 
-
-                var execLog = ""
+                var execLogInput = ""
+                var execLogError = ""
+                var execLogOutput = ""
                 // Scan Befehl ausführen (Asynchron)
                 runAsync {
-                    val exec = cmdCtrl.runScanCmd(scanProfileModel)
 
+
+                    var byteArrayStream = ByteArray(0)
                     var i = 0
+                    val exec = cmdCtrl.runScanCmd(scanProfileModel)
                     if (exec != null) {
+                        var timesteps = 1000L
                         while (exec.isAlive) {
-                            println("Scan: ${i}s")
-                            Thread.sleep(1000L)
+                            println("elapsed time: ${timesteps / 1000 * i}s")
+                            Thread.sleep(timesteps)
                             i++
+
+
+                            var outputStream = ByteArrayOutputStream()
+                            outputStream.write(byteArrayStream)
+                            while (exec.inputStream.available() > 0) {
+                                outputStream.write(exec.inputStream.read())
+                            }
+                            byteArrayStream = outputStream.toByteArray()
+                            outputStream.close()
                         }
-                        // Scan erzeugt bei Fehler einen Log
-                        execLog = cmdCtrl.getExecLog(exec.inputStream)
+
+                        execLogInput = String(byteArrayStream, StandardCharsets.UTF_8)
                     }
                 } ui {
                     // Wenn Scan ausgeführt ist Log prüfen.
-                    if (execLog.isEmpty()) {                   // Wenn log leer -> erfolgreicher Scan
+                    if (execLogInput.isEmpty()) {                   // Wenn log leer -> erfolgreicher Scan
                         progressIndicator.progress = 100.0     // Progress auf 100% setzen um Fertig-Haken anzuzeigen
                         runAsync {
                             Thread.sleep(2000L)          // Haken X ms lang anzeigen
@@ -250,7 +268,7 @@ class MainView : View() {
 
 
                     } else {                        // Wenn log nicht leer -> Fehler ist aufgetreten
-                        println(execLog)            // Log auf Console ausgeben
+                        println(execLogInput)            // Log auf Console ausgeben
                         progressIndicator.hide()    // ProgressIndicator ausblenden
 
                         // Wenn ProgressIndicator ausgeblendet wird Text bzw. Bild wieder einblenden
@@ -261,11 +279,11 @@ class MainView : View() {
 
                         // Prüfen ob im Log die Meldung steht, dass in der Zuführung keine Seiten
                         // vorhanden sind
-                        if (execLog.contains("keine Seiten")) {
+                        if (execLogInput.contains("keine Seiten")) {
                             showInfoZufuehrungLeer()  // Alert mit Meldung anzeigen
-                        } else if (execLog.contains("page(s) scanned")) {
+                        } else if (execLogInput.contains("page(s) scanned")) {
                             var seiten = 0
-                            execLog.lines().forEach { string ->
+                            execLogInput.lines().forEach { string ->
                                 if (string.contains("page(s) scanned")) {
                                     seiten = string.replace(Regex("[^0-9]"), "").toInt()
 
@@ -274,7 +292,7 @@ class MainView : View() {
                             println("GESCANNTE SEITEN $seiten")
                             mainCtrl.addNumberOfScannedPages(seiten)
                         } else {
-                            showErrorAlert(execLog)  // Log in einem Fenster ausgeben
+                            showErrorAlert(execLogInput)  // Log in einem Fenster ausgeben
                         }
 
 

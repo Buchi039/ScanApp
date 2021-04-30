@@ -4,6 +4,7 @@ import ConfigReader
 import de.toowoxx.model.ScanProfileModel
 import tornadofx.Controller
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.time.Instant
@@ -38,7 +39,7 @@ class CommandController : Controller() {
 
     fun runTestCmd(): Process? {
         Thread.sleep(5000L)
-        return Runtime.getRuntime().exec("cd ..")
+        return Runtime.getRuntime().exec("ping 8.8.8.8 -c 11")
     }
 
     /**
@@ -82,5 +83,20 @@ class CommandController : Controller() {
 
     fun isScannerOffline(cmdOutput: String): Boolean {
         return (cmdOutput.contains("offline"))
+    }
+
+}
+
+class StreamGobbler(var `is`: InputStream) : Thread() {
+    override fun run() {
+        try {
+            val isr = InputStreamReader(`is`)
+            val br = BufferedReader(isr)
+            var line: String? = null
+            while (br.readLine().also { line = it } != null) println(line)
+        } catch (ioe: IOException) {
+            ioe.printStackTrace()
+        }
+
     }
 }
