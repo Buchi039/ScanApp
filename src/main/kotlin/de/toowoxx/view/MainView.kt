@@ -19,10 +19,7 @@ import javafx.scene.text.Font
 import tornadofx.*
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
-import kotlin.time.TimeSource
 
 
 class MainView : View() {
@@ -91,55 +88,57 @@ class MainView : View() {
                 }
             }
 
+            scrollpane {
+                val scrollPane = this
+                minViewportWidth = 490.0
+                borderpane {
 
-            borderpane {
+                    borderPane = this
+                    minWidth = scrollPane.minWidth
+                    
+                    //this.style = "-fx-background-color: #FFFFFF;"
+                    background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
 
-                borderPane = this
-                minWidth = 500.0
+                    top {
+                        vbox {
+                            minHeight = 70.0
 
-
-                //this.style = "-fx-background-color: #FFFFFF;"
-                background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
-
-                top {
-                    vbox {
-                        minHeight = 70.0
-
-                        hbox {
-
-
-                            val imageView =
-                                ImageView(mainCtrl.getImageFromResource("diesystempartner_logo.jpg"))
-
-                            imageView.fitHeight = 100.0
-                            imageView.isPreserveRatio = true
-
-                            alignment = Pos.CENTER
-                            paddingTop = 15.0
-                            paddingBottom = 45.0
-                            this.add(imageView)
+                            hbox {
 
 
-                        }
+                                val imageView =
+                                    ImageView(mainCtrl.getImageFromResource("diesystempartner_logo.jpg"))
 
-                        text {
-                            text = "Scan-Profil auswählen"
-                            font = Font.font(25.0)
-                            alignment = Pos.CENTER
+                                imageView.fitHeight = 100.0
+                                imageView.isPreserveRatio = true
+
+                                alignment = Pos.CENTER
+                                paddingTop = 15.0
+                                paddingBottom = 45.0
+                                this.add(imageView)
+
+
+                            }
+
+                            text {
+                                text = "Scan-Profil auswählen"
+                                font = Font.font(25.0)
+                                alignment = Pos.CENTER
+                            }
                         }
                     }
-                }
-                val buttonGridpane = genScanButtonGridpane()
-                center = buttonGridpane
+                    val buttonGridpane = genScanButtonGridpane()
+                    center = buttonGridpane
 
-                bottom {
-                    background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
+                    bottom {
+                        background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
+                    }
+
                 }
 
+                root.add(borderPane)
+                //refreshView()
             }
-
-            root.add(borderPane)
-            //refreshView()
         }
     }
 
@@ -230,11 +229,12 @@ class MainView : View() {
 
                     var byteArrayStream = ByteArray(0)
                     var i = 0
-                    val exec = cmdCtrl.runScanCmd(scanProfileModel)
+                    // var exec = cmdCtrl.runScanCmd(scanProfileModel)
+                    var exec = cmdCtrl.runTestCmd()
                     if (exec != null) {
                         var timesteps = 1000L
                         while (exec.isAlive) {
-                            println("elapsed time: ${timesteps / 1000 * i}s")
+                            print("elapsed time: ${timesteps / 1000 * i}s\r")
                             Thread.sleep(timesteps)
                             i++
 
@@ -247,6 +247,7 @@ class MainView : View() {
                             byteArrayStream = outputStream.toByteArray()
                             outputStream.close()
                         }
+                        println()
 
                         execLogInput = String(byteArrayStream, StandardCharsets.UTF_8)
                     }
