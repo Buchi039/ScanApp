@@ -95,7 +95,7 @@ class MainView : View() {
 
                     borderPane = this
                     minWidth = scrollPane.minWidth
-                    
+
                     //this.style = "-fx-background-color: #FFFFFF;"
                     background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
 
@@ -229,8 +229,8 @@ class MainView : View() {
 
                     var byteArrayStream = ByteArray(0)
                     var i = 0
-                    // var exec = cmdCtrl.runScanCmd(scanProfileModel)
-                    var exec = cmdCtrl.runTestCmd()
+                    var exec = cmdCtrl.runScanCmd(scanProfileModel)
+//                    var exec = cmdCtrl.runTestCmd()
                     if (exec != null) {
                         var timesteps = 1000L
                         while (exec.isAlive) {
