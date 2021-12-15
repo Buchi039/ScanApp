@@ -282,6 +282,10 @@ class MainView : View() {
                         // vorhanden sind
                         if (execLogInput.contains("keine Seiten")) {
                             showInfoZufuehrungLeer()  // Alert mit Meldung anzeigen
+                        } else if (execLogInput.contains("Beim Speichern der Datei ist ein Fehler aufgetreten") ||
+                            execLogInput.contains("An error occurred when trying to save the file")
+                        ) {
+                            showInfoErrorOnSave() // Alert mit Fehlermeldung anzeigen
                         } else if (execLogInput.contains("page(s) scanned")) {
                             var seiten = 0
                             execLogInput.lines().forEach { string ->
@@ -365,6 +369,16 @@ class MainView : View() {
 
         alert.showAndWait()
 
+    }
+
+    private fun showInfoErrorOnSave() {
+        val alert = Alert(Alert.AlertType.WARNING)
+
+        alert.title = "Fehler beim speichern der Dokumente"
+        alert.headerText = ""
+        alert.contentText = "Gescannte Dokumente konnten nicht gespeichert werden."
+
+        alert.showAndWait()
     }
 
     /**
