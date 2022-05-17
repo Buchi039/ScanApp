@@ -1,5 +1,6 @@
 package de.toowoxx.model
 
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
@@ -25,6 +26,9 @@ class ScanProfileModel() : JsonModel {
     val scanFormatProperty = SimpleStringProperty()
     var scanFormat by scanFormatProperty
 
+    val splitScanProperty = SimpleBooleanProperty()
+    var splitScan by splitScanProperty
+
 
     override fun updateModel(json: JsonObject) {
         with(json) {
@@ -34,6 +38,7 @@ class ScanProfileModel() : JsonModel {
             imgFilename = string("imgFilename")
             scanPath = string("scanPath")
             scanFormat = string("stringFormat")
+            splitScan = boolean("splitScan") == true
         }
     }
 
@@ -45,12 +50,13 @@ class ScanProfileModel() : JsonModel {
             add("imgFilename", imgFilename)
             add("scanPath", scanPath)
             add("scanFormat", scanFormat)
+            add("splitScan", splitScan)
         }
     }
 
     fun toScanProfileJson(): ScanProfileJson {
         var buttonDataJson =
-            ScanProfileJson(id, napsProfile, title, imgFilename, scanPath, scanFormat)
+            ScanProfileJson(id, napsProfile, title, imgFilename, scanPath, scanFormat, splitScan)
         return buttonDataJson
     }
 }
@@ -62,7 +68,8 @@ data class ScanProfileJson(
     val title: String,
     val imgPath: String,
     val scanPath: String,
-    val scanFormat: String
+    val scanFormat: String,
+    val splitScan: Boolean
 ) {
 
     fun toScanProfileData(): ScanProfileModel {
@@ -73,6 +80,7 @@ data class ScanProfileJson(
         profile.imgFilename = imgPath
         profile.scanPath = scanPath
         profile.scanFormat = scanFormat
+        profile.splitScan = splitScan
         return profile
     }
 

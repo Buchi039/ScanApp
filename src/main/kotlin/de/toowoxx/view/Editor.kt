@@ -25,6 +25,8 @@ class Editor : View("Editor") {
 
     var scanProfileTitleField: TextField by singleAssign()
     var scanProfileImgCheckbox: CheckBox by singleAssign()
+    var scanProfileSplitScan: CheckBox by singleAssign()
+
     var scanProfileImgCombobox: ComboBox<String> by singleAssign()
     var scanProfileScanPathField: TextField by singleAssign()
     var scanProfileNAPSCombo: ComboBox<String> by singleAssign()
@@ -39,6 +41,8 @@ class Editor : View("Editor") {
     var iconField: Field by singleAssign()
 
     val iconCheckboxProperty = SimpleBooleanProperty()
+    val splitScanProperty = SimpleBooleanProperty()
+
     // var directoryChooser: DirectoryChooser by singleAssign()
 
     override val root = hbox()
@@ -182,6 +186,14 @@ class Editor : View("Editor") {
                                             scanProfileScanPathField.text = showDialog.absolutePath
                                     }
                                     prefWidthProperty().bind(scanProfileFormatCombo.widthProperty())
+                                }
+                            }
+
+                            /** Feld mit der Auswahl ob für jede Seite ein extra File angelegt werden soll */
+                            field("Extra File pro Seite") {
+                                checkbox("", splitScanProperty) {
+                                    scanProfileSplitScan = this
+
                                 }
                             }
 
@@ -358,6 +370,8 @@ class Editor : View("Editor") {
         profile.scanPath = File(System.getProperty("user.home")).toString()
         profile.scanFormat = ""
         profile.napsProfile = ""
+        profile.splitScan = false
+
         scanProfileList.add(profile)
 
     }
@@ -379,6 +393,7 @@ class Editor : View("Editor") {
                 scanFormatProperty.unbindBidirectional(scanProfileFormatCombo.valueProperty())
                 napsProfileProperty.unbindBidirectional(scanProfileNAPSCombo.valueProperty())
                 imgFilenameProperty.unbindBidirectional(scanProfileImgCombobox.valueProperty())
+                splitScanProperty.unbindBidirectional(scanProfileSplitScan.selectedProperty())
             }
 
 
@@ -391,6 +406,8 @@ class Editor : View("Editor") {
             scanProfileFormatCombo.bind(scanProfile.scanFormatProperty)
             scanProfileNAPSCombo.bind(scanProfile.napsProfileProperty)
             scanProfileImgCombobox.bind(scanProfile.imgFilenameProperty)
+            scanProfileSplitScan.bind(scanProfile.splitScanProperty)
+
 
             // Scanprofil merken
             prevSelectionScanProfile = scanProfile

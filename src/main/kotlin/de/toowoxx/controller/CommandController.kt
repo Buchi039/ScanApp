@@ -32,7 +32,7 @@ class CommandController : Controller() {
         napsPath += "\\App\\helper.Console.exe"
 
 
-        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile)
+        val cmd = buildNapsCmd(napsPath, model.scanPath, filename, model.napsProfile, model.splitScan)
         println("Command: $cmd")
         return Runtime.getRuntime().exec(cmd)
     }
@@ -55,9 +55,14 @@ class CommandController : Controller() {
         napsConsolePath: String,
         scanPath: String,
         filename: String,
-        profileName: String
+        profileName: String,
+        splitScan: Boolean
     ): String {
-        return "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\" --v"
+        var cmd = "$napsConsolePath -o \"$scanPath\\$filename\" -p \"$profileName\" --v"
+        if (splitScan) {
+            cmd += " --split"
+        }
+        return cmd
     }
 
     /**
